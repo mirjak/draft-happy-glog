@@ -81,13 +81,13 @@ The extension covers:
 
 # Event Schema Definition
 
-This document  proposes a qlog schema for HEv3 using the newly defined event schema urn:ietf:params:qlog:events:hev3.
+This document  proposes a qlog schema for HEv3 using the newly defined event schema 'urn:ietf:params:qlog:events:hev3'.
 
 ## Draft Event Schema Identification
 
 This section is to be removed before publishing as an RFC.
 
-Only implementations of the final, published RFC can use the events belonging to the event schema with the URI urn:ietf:params:qlog:events:hev3. Until such an RFC exists, implementations MUST NOT identify themselves using this URI.
+Only implementations of the final, published RFC can use the events belonging to the event schema with the URI 'urn:ietf:params:qlog:events:hev3'. Until such an RFC exists, implementations MUST NOT identify themselves using this URI.
 
 Implementations of draft versions of the event schema MUST append the string "-" and the corresponding draft number to the URI. For example, draft 01 of this document is identified using the URI urn:ietf:params:qlog:events:hev3-01.
 
@@ -149,8 +149,8 @@ HEDNSResult = {
 # Event Definitions
 
 Each event uses: 
-	name: "hev3:<event>"
-with the <event> type identifier defined below in the section headings.
+	'name: "hev3:<event>"'
+with the '<event>' type identifier defined below in the section headings.
 
 ## Event: config_set
 
