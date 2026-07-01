@@ -47,9 +47,10 @@ informative:
 --- abstract
 
 This document specifies a qlog extension for Happy Eyeballs v3 (HEv3), enabling
-logging of dual-stack connection racing behavior. It defines a dedicated
-event category, event names, and JSON data structures that capture DNS timing,
-candidate discovery, attempt scheduling, fallback timers, racing windows,
+logging of dual-stack and multi-protocol connection racing behavior. It defines
+a dedicated event schema, event names, and data structures that capture DNS
+resolution timing, SVCB/HTTPS service discovery, candidate sorting and grouping,
+connection attempt scheduling and racing, NAT64 prefix discovery,
 success/failure outcomes, and summary metrics.
 
 --- middle
@@ -66,10 +67,11 @@ decision-making and timing.
 
 The extension covers:
 
-* Logging of DNS queries and resolution timing.
-* Candidate address discovery and ranking.
+* Logging of DNS queries, SVCB/HTTPS service discovery, and resolution timing.
+* Candidate address discovery, grouping, and sorting.
 * Scheduling, cancellation, or execution of connection attempts.
-* Fallback timer management and racing windows.
+* Connection attempt timer management and racing.
+* NAT64 prefix discovery and address synthesis.
 * Success, failure, and timeout results.
 * End-to-end metrics summarizing the HE session.
 
