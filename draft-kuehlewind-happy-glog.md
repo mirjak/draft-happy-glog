@@ -100,15 +100,25 @@ The namespace identifier itself is not affected by this requirement.
 
 ~~~ cddl
 HEAttemptTarget = {
-	address: string
+	address: text
 	port: uint16
-	family: "ipv4" | "ipv6"
-	interface: string ?
-	path_id: string ?
+	family: "ipv4" / "ipv6"
+	interface: text ?
+	path_id: text ?
+	alpn: [+ text] ?
+	service_name: text ?
+	service_priority: uint32 ?
+	ech_offered: bool ?
 
 	* $he-attempttarget-extension
 }
 ~~~
+
+The `alpn` field records the negotiated ALPN set for this target derived
+from SVCB records. The `service_name` and `service_priority` fields
+identify which SVCB ServiceMode record this target originates from.
+The `ech_offered` field indicates whether ECH will be attempted on
+this connection.
 
 ## Policy
 
@@ -137,14 +147,40 @@ If omitted, `success_definition` defaults to:
 
 ## DNS Result
 
+DNS results can represent either address records (A/AAAA) or service records (SVCB/HTTPS).
+
 ~~~ cddl
-HEDNSResult = {
-	address: string
-	family: "ipv4" | "ipv6"
+HEDNSResult = HEDNSAddressResult / HEDNSServiceResult
+
+HEDNSAddressResult = {
+	type: "address"
+	address: text
+	family: "ipv4" / "ipv6"
 	ttl_s: uint32 ?
+
+	* $he-dnsaddressresult-extension
+}
+
+HEDNSServiceResult = {
+	type: "service"
+	mode: "alias" / "servicemode"
+	target_name: text
 	priority: uint32 ?
+	alpn: [+ text] ?
+	no_default_alpn: bool ?
+	ech_config: text ?
+	ipv4hint: [+ text] ?
+	ipv6hint: [+ text] ?
+	ttl_s: uint32 ?
+
+	* $he-dnsserviceresult-extension
 }
 ~~~
+
+The `ech_config` field contains a base64-encoded ECHConfigList when present
+in the SVCB/HTTPS record. The `mode` field distinguishes AliasMode records
+(which require a follow-up query) from ServiceMode records that carry
+usable service parameters.
 
 # Event Definitions
 
@@ -191,7 +227,7 @@ HEDNSQueryStarted = {
 	he_session_id: string
 	dns_id: string
 	hostname: string
-	qtypes: [ "A" | "AAAA"]+
+	qtypes: [+ "A" / "AAAA" / "SVCB" / "HTTPS"]
 	bootstrap_hint: string ?
 
 	* $$he-dnsquerystarted-extension
@@ -205,27 +241,50 @@ HEDNSQueryFinished = {
 	he_session_id: string
 	dns_id: string
 	hostname: string
-	results: [HEDNSResult]
-	error_code: string ?
-	error_message: string ?
+	results: [* HEDNSResult]
+	answer_type: "positive" / "negative" / "error" ?
+	error_code: text ?
+	error_message: text ?
 	duration_ms: uint32
+	dnssec_validated: bool ?
+	is_alias_follow: bool ?
 
 	* $$he-dnsqueryfinished-extension
 }
 ~~~
+
+The `answer_type` field distinguishes positive (non-empty) from negative
+(empty, no error) and error responses, which is significant for HEv3's
+async resolution logic (Section 4.2). The `dnssec_validated` field indicates
+whether the response was cryptographically validated, relevant for
+determining whether SVCB-dependent handshakes must be pended (Section 6.3).
+The `is_alias_follow` field is set to true when this query was triggered
+by an AliasMode SVCB/HTTPS record requiring a follow-up resolution.
 
 ## Event: candidate_discovered
 
 ~~~ cddl
 HECandidateDiscovered = {
 	he_session_id: string
-	source: "dns" | "cache" | "alt_svc" | "synth" | "preconnect"
+	source: "dns" / "cache" / "alt_svc" / "synth" / "preconnect" /
+	        "svcb_hint" / "nat64_synthesis"
 	target: HEAttemptTarget
 	rank: uint32
+	group_id: text ?
+	supersedes: text ?
 
 	* $$he-candidatediscovered-extension
 }
 ~~~
+
+The `source` value `"svcb_hint"` indicates the address came from ipv4hint or
+ipv6hint parameters in a SVCB/HTTPS record. The `"nat64_synthesis"` value
+indicates a locally synthesized IPv6 address for NAT64 traversal.
+
+The `group_id` field identifies which protocol/priority group this candidate
+belongs to (per Section 5.1 and 5.2 of HEv3). The `supersedes` field
+contains the address of an SVCB hint that this candidate replaces once
+authoritative A/AAAA records arrive (per Section 7 of HEv3).
 
 ## Event: attempt_scheduled
 
@@ -261,6 +320,41 @@ HEAttemptStarted = {
 ~~~
 
 QUIC implementations should set `ref_event_id` to the relevant `connectivity:connection_started`.
+
+## Event: attempt_pended
+
+Logged when a connection attempt's TLS handshake must be paused until
+SVCB/HTTPS responses are received, as required by Section 6.3 of HEv3
+(e.g., when DNS is cryptographically protected and ECH configuration
+is expected from SVCB records).
+
+~~~ cddl
+HEAttemptPended = {
+	he_session_id: string
+	attempt_id: string
+	reason: "awaiting_svcb" / "awaiting_ech_config" / "dnssec_validation"
+	waiting_for: text ?
+
+	* $$he-attemptpended-extension
+}
+~~~
+
+The `waiting_for` field MAY reference the `dns_id` of the outstanding
+SVCB/HTTPS query.
+
+## Event: attempt_resumed
+
+Logged when a previously pended attempt resumes its handshake.
+
+~~~ cddl
+HEAttemptResumed = {
+	he_session_id: string
+	attempt_id: string
+	trigger: "svcb_received" / "timeout" / "policy_override"
+
+	* $$he-attemptresumed-extension
+}
+~~~
 
 ## Event: attempt_outcome
 
@@ -406,7 +500,7 @@ Namespace:
 : nev3
 
 Event Types:
-:  config_set, config_updated, dns_query_started, dns_query_finished, candidate_discovered, attempt_scheduled, attempt_started, attempt_outcome, racing_window_opened, racing_window_closed, fallback_timer_set, fallback_timer_fired, fallback_timer_canceled, connection_selected, connection_aborted, metrics
+:  config_set, config_updated, dns_query_started, dns_query_finished, candidate_discovered, attempt_scheduled, attempt_started, attempt_pended, attempt_resumed, attempt_outcome, racing_window_opened, racing_window_closed, fallback_timer_set, fallback_timer_fired, fallback_timer_canceled, connection_selected, connection_aborted, metrics
 
 Description:
 : Event definitions for logging HEv3 events
