@@ -423,6 +423,7 @@ HEAttemptScheduled = {
 	reason:
 		"policy_timer" |
 		"dns_completed" |
+		"resolution_delay_expired" |
 		"racing_window" |
 		"retry"
 
