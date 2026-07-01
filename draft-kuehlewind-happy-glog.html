@@ -1061,7 +1061,7 @@ svg {
 <div id="internal-metadata" class="document-information">
 <dl id="identifiers">
 <dt class="label-workgroup">Workgroup:</dt>
-<dd class="workgroup">happy</dd>
+<dd class="workgroup">Heuristics and Algorithms to Prioritize Protocol deploYment</dd>
 <dt class="label-internet-draft">Internet-Draft:</dt>
 <dd class="internet-draft">draft-kuehlewind-happy-glog-latest</dd>
 <dt class="label-published">Published:</dt>
@@ -1096,14 +1096,15 @@ success/failure outcomes, and summary metrics.<a href="#section-abstract-1" clas
       </h2>
 <p id="section-note.1-1">This note is to be removed before publishing as an RFC.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
 <p id="section-note.1-2">
-        The latest revision of this draft can be found at <span><a href="https://example.com/LATEST">https://example.com/LATEST</a></span>.
+        The latest revision of this draft can be found at <span><a href="https://mirjak.github.io/draft-happy-glog/draft-kuehlewind-happy-glog.html">https://mirjak.github.io/draft-happy-glog/draft-kuehlewind-happy-glog.html</a></span>.
         Status information for this document may be found at <span><a href="https://datatracker.ietf.org/doc/draft-kuehlewind-happy-glog/">https://datatracker.ietf.org/doc/draft-kuehlewind-happy-glog/</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
 <p id="section-note.1-3">
         Discussion of this document takes place on the
-        WG Working Group mailing list (<span><a href="mailto:WG@example.com">mailto:WG@example.com</a></span>),
-        which is archived at <span><a href="https://example.com/WG">https://example.com/WG</a></span>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
+        Heuristics and Algorithms to Prioritize Protocol deploYment Working Group mailing list (<span><a href="mailto:happy@ietf.org">mailto:happy@ietf.org</a></span>),
+        which is archived at <span><a href="https://mailarchive.ietf.org/arch/browse/happy/">https://mailarchive.ietf.org/arch/browse/happy/</a></span>.
+        Subscribe at <span><a href="https://www.ietf.org/mailman/listinfo/happy/">https://www.ietf.org/mailman/listinfo/happy/</a></span>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
 <p id="section-note.1-4">Source for this draft and an issue tracker can be found at
-        <span><a href="https://github.com/USER/REPO">https://github.com/USER/REPO</a></span>.<a href="#section-note.1-4" class="pilcrow">¶</a></p>
+        <span><a href="https://github.com/mirjak/draft-happy-glog">https://github.com/mirjak/draft-happy-glog</a></span>.<a href="#section-note.1-4" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1200,40 +1201,55 @@ success/failure outcomes, and summary metrics.<a href="#section-abstract-1" clas
                 <p id="section-toc.1-1.5.2.5.1"><a href="#section-5.5" class="auto internal xref">5.5</a>.  <a href="#name-event-candidate_discovered" class="internal xref">Event: candidate_discovered</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.6">
-                <p id="section-toc.1-1.5.2.6.1"><a href="#section-5.6" class="auto internal xref">5.6</a>.  <a href="#name-event-attempt_scheduled" class="internal xref">Event: attempt_scheduled</a></p>
+                <p id="section-toc.1-1.5.2.6.1"><a href="#section-5.6" class="auto internal xref">5.6</a>.  <a href="#name-event-candidates_sorted" class="internal xref">Event: candidates_sorted</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.7">
-                <p id="section-toc.1-1.5.2.7.1"><a href="#section-5.7" class="auto internal xref">5.7</a>.  <a href="#name-event-attempt_started" class="internal xref">Event: attempt_started</a></p>
+                <p id="section-toc.1-1.5.2.7.1"><a href="#section-5.7" class="auto internal xref">5.7</a>.  <a href="#name-event-candidate_removed" class="internal xref">Event: candidate_removed</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.8">
-                <p id="section-toc.1-1.5.2.8.1"><a href="#section-5.8" class="auto internal xref">5.8</a>.  <a href="#name-event-attempt_outcome" class="internal xref">Event: attempt_outcome</a></p>
+                <p id="section-toc.1-1.5.2.8.1"><a href="#section-5.8" class="auto internal xref">5.8</a>.  <a href="#name-event-candidates_resorted" class="internal xref">Event: candidates_resorted</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.9">
-                <p id="section-toc.1-1.5.2.9.1"><a href="#section-5.9" class="auto internal xref">5.9</a>.  <a href="#name-event-racing_window_opened" class="internal xref">Event: racing_window_opened</a></p>
+                <p id="section-toc.1-1.5.2.9.1"><a href="#section-5.9" class="auto internal xref">5.9</a>.  <a href="#name-event-attempt_scheduled" class="internal xref">Event: attempt_scheduled</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.10">
-                <p id="section-toc.1-1.5.2.10.1"><a href="#section-5.10" class="auto internal xref">5.10</a>. <a href="#name-event-racing_window_closed" class="internal xref">Event: racing_window_closed</a></p>
+                <p id="section-toc.1-1.5.2.10.1"><a href="#section-5.10" class="auto internal xref">5.10</a>. <a href="#name-event-attempt_started" class="internal xref">Event: attempt_started</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.11">
-                <p id="section-toc.1-1.5.2.11.1"><a href="#section-5.11" class="auto internal xref">5.11</a>. <a href="#name-event-fallback_timer_set" class="internal xref">Event: fallback_timer_set</a></p>
+                <p id="section-toc.1-1.5.2.11.1"><a href="#section-5.11" class="auto internal xref">5.11</a>. <a href="#name-event-attempt_pended" class="internal xref">Event: attempt_pended</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.12">
-                <p id="section-toc.1-1.5.2.12.1"><a href="#section-5.12" class="auto internal xref">5.12</a>. <a href="#name-event-fallback_timer_fired" class="internal xref">Event: fallback_timer_fired</a></p>
+                <p id="section-toc.1-1.5.2.12.1"><a href="#section-5.12" class="auto internal xref">5.12</a>. <a href="#name-event-attempt_resumed" class="internal xref">Event: attempt_resumed</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.13">
-                <p id="section-toc.1-1.5.2.13.1"><a href="#section-5.13" class="auto internal xref">5.13</a>. <a href="#name-event-fallback_timer_cancel" class="internal xref">Event: fallback_timer_canceled</a></p>
+                <p id="section-toc.1-1.5.2.13.1"><a href="#section-5.13" class="auto internal xref">5.13</a>. <a href="#name-event-attempt_outcome" class="internal xref">Event: attempt_outcome</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.14">
-                <p id="section-toc.1-1.5.2.14.1"><a href="#section-5.14" class="auto internal xref">5.14</a>. <a href="#name-event-connection_selected" class="internal xref">Event: connection_selected</a></p>
+                <p id="section-toc.1-1.5.2.14.1"><a href="#section-5.14" class="auto internal xref">5.14</a>. <a href="#name-event-racing_window_opened" class="internal xref">Event: racing_window_opened</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.15">
-                <p id="section-toc.1-1.5.2.15.1"><a href="#section-5.15" class="auto internal xref">5.15</a>. <a href="#name-event-connection_aborted" class="internal xref">Event: connection_aborted</a></p>
+                <p id="section-toc.1-1.5.2.15.1"><a href="#section-5.15" class="auto internal xref">5.15</a>. <a href="#name-event-racing_window_closed" class="internal xref">Event: racing_window_closed</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.16">
-                <p id="section-toc.1-1.5.2.16.1"><a href="#section-5.16" class="auto internal xref">5.16</a>. <a href="#name-event-metrics" class="internal xref">Event: metrics</a></p>
+                <p id="section-toc.1-1.5.2.16.1"><a href="#section-5.16" class="auto internal xref">5.16</a>. <a href="#name-event-fallback_timer_set" class="internal xref">Event: fallback_timer_set</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.17">
-                <p id="section-toc.1-1.5.2.17.1"><a href="#section-5.17" class="auto internal xref">5.17</a>. <a href="#name-conformance-requirements" class="internal xref">Conformance Requirements</a></p>
+                <p id="section-toc.1-1.5.2.17.1"><a href="#section-5.17" class="auto internal xref">5.17</a>. <a href="#name-event-fallback_timer_fired" class="internal xref">Event: fallback_timer_fired</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.18">
+                <p id="section-toc.1-1.5.2.18.1"><a href="#section-5.18" class="auto internal xref">5.18</a>. <a href="#name-event-fallback_timer_cancel" class="internal xref">Event: fallback_timer_canceled</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.19">
+                <p id="section-toc.1-1.5.2.19.1"><a href="#section-5.19" class="auto internal xref">5.19</a>. <a href="#name-event-connection_selected" class="internal xref">Event: connection_selected</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.20">
+                <p id="section-toc.1-1.5.2.20.1"><a href="#section-5.20" class="auto internal xref">5.20</a>. <a href="#name-event-connection_aborted" class="internal xref">Event: connection_aborted</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.21">
+                <p id="section-toc.1-1.5.2.21.1"><a href="#section-5.21" class="auto internal xref">5.21</a>. <a href="#name-event-metrics" class="internal xref">Event: metrics</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.22">
+                <p id="section-toc.1-1.5.2.22.1"><a href="#section-5.22" class="auto internal xref">5.22</a>. <a href="#name-conformance-requirements" class="internal xref">Conformance Requirements</a></p>
 </li>
             </ul>
 </li>
@@ -1337,16 +1353,25 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <div class="lang-cddl sourcecode" id="section-4.1-1">
 <pre>
 HEAttemptTarget = {
-        address: string
+        address: text
         port: uint16
-        family: "ipv4" | "ipv6"
-        interface: string ?
-        path_id: string ?
+        family: "ipv4" / "ipv6"
+        interface: text ?
+        path_id: text ?
+        alpn: [+ text] ?
+        service_name: text ?
+        service_priority: uint32 ?
+        ech_offered: bool ?
 
         * $he-attempttarget-extension
 }
 </pre><a href="#section-4.1-1" class="pilcrow">¶</a>
 </div>
+<p id="section-4.1-2">The <code>alpn</code> field records the negotiated ALPN set for this target derived
+from SVCB records. The <code>service_name</code> and <code>service_priority</code> fields
+identify which SVCB ServiceMode record this target originates from.
+The <code>ech_offered</code> field indicates whether ECH will be attempted on
+this connection.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="policy">
@@ -1357,29 +1382,76 @@ HEAttemptTarget = {
 <div class="lang-cddl sourcecode" id="section-4.2-1">
 <pre>
 HEPolicy = {
-        base_delay_ms: uint32
-        jitter_ms: uint32
-        max_parallel_attempts: uint32
-        prefer_ipv6: bool
-        prefer_last_success_family: bool
-        ipv6_precedence_offset: int32
-        initial_family: "ipv4" | "ipv6" | "auto"
+        resolution_delay_ms: uint32 ?
+        preferred_address_family_count: uint32 ?
+        connection_attempt_delay_ms: uint32 ?
+        min_connection_attempt_delay_ms: uint32 ?
+        max_connection_attempt_delay_ms: uint32 ?
+        max_parallel_attempts: uint32 ?
+        last_resort_local_synthesis_delay_ms: uint32 ?
+        preferred_family: "ipv4" / "ipv6" / "auto" ?
         success_definition:
-                "tcp_connected" |
-                "tls_handshake_complete" |
-                "quic_1rtt_ready"  ?
+                "tcp_connected" /
+                "tls_handshake_complete" /
+                "quic_1rtt_ready" ?
+        use_historical_rtt: bool ?
 
         * $he-policy-extension
 }
 </pre><a href="#section-4.2-1" class="pilcrow">¶</a>
 </div>
-<p id="section-4.2-2">If omitted, <code>success_definition</code> defaults to:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">The fields correspond to the configurable values defined in Section 9 of HEv3:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.2-3.1">
-            <p id="section-4.2-3.1.1"><code>tcp_connected</code> for TCP/TLS stacks<a href="#section-4.2-3.1.1" class="pilcrow">¶</a></p>
+            <p id="section-4.2-3.1.1"><code>resolution_delay_ms</code>: Time to wait for preferred-family and SVCB/HTTPS
+records after receiving initial answers (recommended 50ms).<a href="#section-4.2-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.2-3.2">
-            <p id="section-4.2-3.2.1"><code>quic_1rtt_ready</code> for QUIC stacks<a href="#section-4.2-3.2.1" class="pilcrow">¶</a></p>
+            <p id="section-4.2-3.2.1"><code>preferred_address_family_count</code>: Number of addresses of the preferred
+family attempted before trying the other family (recommended 1).<a href="#section-4.2-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-3.3">
+            <p id="section-4.2-3.3.1"><code>connection_attempt_delay_ms</code>: Delay between connection attempts in the
+absence of RTT data (recommended 250ms).<a href="#section-4.2-3.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-3.4">
+            <p id="section-4.2-3.4.1"><code>min_connection_attempt_delay_ms</code>: Floor for the connection attempt delay
+(recommended 100ms, <span class="bcp14">MUST NOT</span> be less than 10ms).<a href="#section-4.2-3.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-3.5">
+            <p id="section-4.2-3.5.1"><code>max_connection_attempt_delay_ms</code>: Ceiling for the connection attempt delay
+(recommended 2s).<a href="#section-4.2-3.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-3.6">
+            <p id="section-4.2-3.6.1"><code>max_parallel_attempts</code>: Maximum number of connection attempts allowed
+in parallel.<a href="#section-4.2-3.6.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-3.7">
+            <p id="section-4.2-3.7.1"><code>last_resort_local_synthesis_delay_ms</code>: Time to wait before querying A
+records for local NAT64 synthesis when AAAA attempts are failing on
+IPv6-only networks (recommended 2s).<a href="#section-4.2-3.7.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-3.8">
+            <p id="section-4.2-3.8.1"><code>preferred_family</code>: The address family assumed to have better connectivity.<a href="#section-4.2-3.8.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-3.9">
+            <p id="section-4.2-3.9.1"><code>success_definition</code>: What constitutes a successful connection establishment.<a href="#section-4.2-3.9.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-3.10">
+            <p id="section-4.2-3.10.1"><code>use_historical_rtt</code>: Whether historical RTT data is used to order
+destinations and adjust attempt delays.<a href="#section-4.2-3.10.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.2-4">If omitted, <code>success_definition</code> defaults to:<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.2-5.1">
+            <p id="section-4.2-5.1.1"><code>tcp_connected</code> for plain TCP stacks<a href="#section-4.2-5.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-5.2">
+            <p id="section-4.2-5.2.1"><code>tls_handshake_complete</code> for TCP+TLS stacks<a href="#section-4.2-5.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-5.3">
+            <p id="section-4.2-5.3.1"><code>quic_1rtt_ready</code> for QUIC stacks<a href="#section-4.2-5.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1389,16 +1461,40 @@ HEPolicy = {
         <h3 id="name-dns-result">
 <a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-dns-result" class="section-name selfRef">DNS Result</a>
         </h3>
-<div class="lang-cddl sourcecode" id="section-4.3-1">
+<p id="section-4.3-1">DNS results can represent either address records (A/AAAA) or service records (SVCB/HTTPS).<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<div class="lang-cddl sourcecode" id="section-4.3-2">
 <pre>
-HEDNSResult = {
-        address: string
-        family: "ipv4" | "ipv6"
+HEDNSResult = HEDNSAddressResult / HEDNSServiceResult
+
+HEDNSAddressResult = {
+        type: "address"
+        address: text
+        family: "ipv4" / "ipv6"
         ttl_s: uint32 ?
-        priority: uint32 ?
+
+        * $he-dnsaddressresult-extension
 }
-</pre><a href="#section-4.3-1" class="pilcrow">¶</a>
+
+HEDNSServiceResult = {
+        type: "service"
+        mode: "alias" / "servicemode"
+        target_name: text
+        priority: uint32 ?
+        alpn: [+ text] ?
+        no_default_alpn: bool ?
+        ech_config: text ?
+        ipv4hint: [+ text] ?
+        ipv6hint: [+ text] ?
+        ttl_s: uint32 ?
+
+        * $he-dnsserviceresult-extension
+}
+</pre><a href="#section-4.3-2" class="pilcrow">¶</a>
 </div>
+<p id="section-4.3-3">The <code>ech_config</code> field contains a base64-encoded ECHConfigList when present
+in the SVCB/HTTPS record. The <code>mode</code> field distinguishes AliasMode records
+(which require a follow-up query) from ServiceMode records that carry
+usable service parameters.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1419,7 +1515,7 @@ with the <code>&lt;event&gt;</code> type identifier defined below in the section
 <div class="lang-cddl sourcecode" id="section-5.1-1">
 <pre>
 HEConfigSet = {
-        he_session_id: string
+        he_session_id: text
         policy: HEPolicy,
         reason:
                 "startup" |
@@ -1441,7 +1537,7 @@ HEConfigSet = {
 <div class="lang-cddl sourcecode" id="section-5.2-1">
 <pre>
 HEConfigUpdated = {
-        he_session_id: string
+        he_session_id: text
         changed: HEPolicy
         reason:
                 "network_change" |
@@ -1463,11 +1559,11 @@ HEConfigUpdated = {
 <div class="lang-cddl sourcecode" id="section-5.3-1">
 <pre>
 HEDNSQueryStarted = {
-        he_session_id: string
-        dns_id: string
-        hostname: string
-        qtypes: [ "A" | "AAAA"]+
-        bootstrap_hint: string ?
+        he_session_id: text
+        dns_id: text
+        hostname: text
+        qtypes: [+ "A" / "AAAA" / "SVCB" / "HTTPS"]
+        bootstrap_hint: text ?
 
         * $$he-dnsquerystarted-extension
 }
@@ -1483,18 +1579,28 @@ HEDNSQueryStarted = {
 <div class="lang-cddl sourcecode" id="section-5.4-1">
 <pre>
 HEDNSQueryFinished = {
-        he_session_id: string
-        dns_id: string
-        hostname: string
-        results: [HEDNSResult]
-        error_code: string ?
-        error_message: string ?
+        he_session_id: text
+        dns_id: text
+        hostname: text
+        results: [* HEDNSResult]
+        answer_type: "positive" / "negative" / "error" ?
+        error_code: text ?
+        error_message: text ?
         duration_ms: uint32
+        dnssec_validated: bool ?
+        is_alias_follow: bool ?
 
         * $$he-dnsqueryfinished-extension
 }
 </pre><a href="#section-5.4-1" class="pilcrow">¶</a>
 </div>
+<p id="section-5.4-2">The <code>answer_type</code> field distinguishes positive (non-empty) from negative
+(empty, no error) and error responses, which is significant for HEv3's
+async resolution logic (Section 4.2). The <code>dnssec_validated</code> field indicates
+whether the response was cryptographically validated, relevant for
+determining whether SVCB-dependent handshakes must be pended (Section 6.3).
+The <code>is_alias_follow</code> field is set to true when this query was triggered
+by an AliasMode SVCB/HTTPS record requiring a follow-up resolution.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="event-candidatediscovered">
@@ -1505,27 +1611,171 @@ HEDNSQueryFinished = {
 <div class="lang-cddl sourcecode" id="section-5.5-1">
 <pre>
 HECandidateDiscovered = {
-        he_session_id: string
-        source: "dns" | "cache" | "alt_svc" | "synth" | "preconnect"
+        he_session_id: text
+        source: "dns" / "cache" / "alt_svc" / "synth" / "preconnect" /
+                "svcb_hint" / "nat64_synthesis"
         target: HEAttemptTarget
-        rank: uint32
+        group_id: text ?
+        supersedes: text ?
 
         * $$he-candidatediscovered-extension
 }
 </pre><a href="#section-5.5-1" class="pilcrow">¶</a>
 </div>
+<p id="section-5.5-2">The <code>source</code> value <code>"svcb_hint"</code> indicates the address came from ipv4hint or
+ipv6hint parameters in a SVCB/HTTPS record. The <code>"nat64_synthesis"</code> value
+indicates a locally synthesized IPv6 address for NAT64 traversal.<a href="#section-5.5-2" class="pilcrow">¶</a></p>
+<p id="section-5.5-3">The <code>group_id</code> field identifies which protocol/priority group this candidate
+belongs to (per Section 5.1 and 5.2 of HEv3). The <code>supersedes</code> field
+contains the address of an SVCB hint that this candidate replaces once
+authoritative A/AAAA records arrive (per Section 7 of HEv3).<a href="#section-5.5-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="event-candidatessorted">
+<section id="section-5.6">
+        <h3 id="name-event-candidates_sorted">
+<a href="#section-5.6" class="section-number selfRef">5.6. </a><a href="#name-event-candidates_sorted" class="section-name selfRef">Event: candidates_sorted</a>
+        </h3>
+<p id="section-5.6-1">Logged once sufficient DNS answers have been received (per Section 4.2 of
+HEv3) and the implementation has applied the three-level sorting algorithm
+(Section 5). This event captures the full grouped and ordered candidate list
+before racing begins.<a href="#section-5.6-1" class="pilcrow">¶</a></p>
+<div class="lang-cddl sourcecode" id="section-5.6-2">
+<pre>
+HECandidatesSorted = {
+        he_session_id: text
+        groups: [+ HECandidateGroup]
+
+        * $$he-candidatessorted-extension
+}
+
+HECandidateGroup = {
+        group_id: text
+        alpn: [+ text] ?
+        ech_available: bool ?
+        service_priority: uint32 ?
+        candidates: [+ HEAttemptTarget]
+}
+</pre><a href="#section-5.6-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.6-3">The <code>groups</code> array is ordered by priority. Within each group:<a href="#section-5.6-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.6-4.1">
+            <p id="section-5.6-4.1.1"><code>alpn</code> captures the application protocol set that defines this group
+(Section 5.1 of HEv3).<a href="#section-5.6-4.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.6-4.2">
+            <p id="section-5.6-4.2.1"><code>ech_available</code> indicates whether ECH configuration is available for
+endpoints in this group (Section 5.1 of HEv3).<a href="#section-5.6-4.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.6-4.3">
+            <p id="section-5.6-4.3.1"><code>service_priority</code> reflects the SVCB SvcPriority value for this group
+(Section 5.2 of HEv3). Groups with equal priority <span class="bcp14">SHOULD</span> be shuffled
+randomly.<a href="#section-5.6-4.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.6-4.4">
+            <p id="section-5.6-4.4.1"><code>candidates</code> is ordered per Section 5.3 of HEv3: RFC 6724 destination
+address selection, historical RTT preferences, and address family
+interleaving applied.<a href="#section-5.6-4.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.6-5">For simple cases without SVCB records, a single group with all candidates
+is sufficient.<a href="#section-5.6-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="event-candidateremoved">
+<section id="section-5.7">
+        <h3 id="name-event-candidate_removed">
+<a href="#section-5.7" class="section-number selfRef">5.7. </a><a href="#name-event-candidate_removed" class="section-name selfRef">Event: candidate_removed</a>
+        </h3>
+<p id="section-5.7-1">Logged when a candidate address is removed from the list during connection
+setup (per Section 7 of HEv3).<a href="#section-5.7-1" class="pilcrow">¶</a></p>
+<div class="lang-cddl sourcecode" id="section-5.7-2">
+<pre>
+HECandidateRemoved = {
+        he_session_id: text
+        target: HEAttemptTarget
+        reason: "ttl_expired" / "svcb_hint_replaced" / "dns_negative" / "alpn_mismatch"
+        had_active_attempt: bool ?
+
+        * $$he-candidateremoved-extension
+}
+</pre><a href="#section-5.7-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.7-3">The <code>reason</code> field indicates why the candidate was removed:<a href="#section-5.7-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.7-4.1">
+            <p id="section-5.7-4.1.1"><code>"ttl_expired"</code>: The DNS TTL for this address expired before an attempt
+was started.<a href="#section-5.7-4.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.7-4.2">
+            <p id="section-5.7-4.2.1"><code>"svcb_hint_replaced"</code>: Authoritative A/AAAA records arrived and this
+hint address was absent from them (Section 7.3 of SVCB).<a href="#section-5.7-4.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.7-4.3">
+            <p id="section-5.7-4.3.1"><code>"dns_negative"</code>: A previously positive record was replaced by a negative
+response (e.g., via DNS push notification).<a href="#section-5.7-4.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.7-4.4">
+            <p id="section-5.7-4.4.1"><code>"alpn_mismatch"</code>: The SVCB ALPN set does not contain protocols the
+client supports (Section 6.2 of HEv3).<a href="#section-5.7-4.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.7-5">The <code>had_active_attempt</code> field indicates whether an in-progress attempt
+exists for this target; per HEv3 Section 7, such attempts <span class="bcp14">SHOULD NOT</span> be
+canceled.<a href="#section-5.7-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="event-candidatesresorted">
+<section id="section-5.8">
+        <h3 id="name-event-candidates_resorted">
+<a href="#section-5.8" class="section-number selfRef">5.8. </a><a href="#name-event-candidates_resorted" class="section-name selfRef">Event: candidates_resorted</a>
+        </h3>
+<p id="section-5.8-1">Logged when the candidate list is re-sorted due to new addresses arriving
+mid-race (per Section 7 of HEv3). Re-sorting ensures that address family
+interleaving and priority rules are maintained correctly regardless of when
+addresses arrive.<a href="#section-5.8-1" class="pilcrow">¶</a></p>
+<div class="lang-cddl sourcecode" id="section-5.8-2">
+<pre>
+HECandidatesResorted = {
+        he_session_id: text
+        trigger: "new_addresses" / "new_svcb" / "dns_push"
+        new_order: [+ HEAttemptTarget]
+
+        * $$he-candidatesresorted-extension
+}
+</pre><a href="#section-5.8-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.8-3">The <code>trigger</code> field captures why re-sorting occurred:<a href="#section-5.8-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.8-4.1">
+            <p id="section-5.8-4.1.1"><code>"new_addresses"</code>: New A/AAAA records arrived (e.g., delayed IPv4 after
+an IPv6-only start).<a href="#section-5.8-4.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.8-4.2">
+            <p id="section-5.8-4.2.1"><code>"new_svcb"</code>: New SVCB/HTTPS ServiceMode records changed grouping or
+priorities.<a href="#section-5.8-4.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.8-4.3">
+            <p id="section-5.8-4.3.1"><code>"dns_push"</code>: A DNS push notification added addresses.<a href="#section-5.8-4.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.8-5">The <code>new_order</code> array contains the full re-sorted candidate list as
+<code>HEAttemptTarget</code> elements. Position in the array implies the new rank.
+Only pending candidates (those not yet attempted or currently in progress)
+are included.<a href="#section-5.8-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="event-attemptscheduled">
-<section id="section-5.6">
+<section id="section-5.9">
         <h3 id="name-event-attempt_scheduled">
-<a href="#section-5.6" class="section-number selfRef">5.6. </a><a href="#name-event-attempt_scheduled" class="section-name selfRef">Event: attempt_scheduled</a>
+<a href="#section-5.9" class="section-number selfRef">5.9. </a><a href="#name-event-attempt_scheduled" class="section-name selfRef">Event: attempt_scheduled</a>
         </h3>
-<div class="lang-cddl sourcecode" id="section-5.6-1">
+<div class="lang-cddl sourcecode" id="section-5.9-1">
 <pre>
 HEAttemptScheduled = {
-        he_session_id: string
-        attempt_id: string
+        he_session_id: text
+        attempt_id: text
         target: HEAttemptTarget
         scheduled_after_ms: uint32
         priority: uint32
@@ -1537,184 +1787,228 @@ HEAttemptScheduled = {
 
         * $$he-attemptscheduled-extension
 }
-</pre><a href="#section-5.6-1" class="pilcrow">¶</a>
-</div>
-</section>
-</div>
-<div id="event-attemptstarted">
-<section id="section-5.7">
-        <h3 id="name-event-attempt_started">
-<a href="#section-5.7" class="section-number selfRef">5.7. </a><a href="#name-event-attempt_started" class="section-name selfRef">Event: attempt_started</a>
-        </h3>
-<div class="lang-cddl sourcecode" id="section-5.7-1">
-<pre>
-HEAttemptStarted = {
-        he_session_id: string
-        attempt_id: string
-        target: HEAttemptTarget
-        transport: "tcp" | "quic"
-        ref_event_id: string ?
-
-        * $$he-attemptstarted-extension
-}
-</pre><a href="#section-5.7-1" class="pilcrow">¶</a>
-</div>
-<p id="section-5.7-2">QUIC implementations should set <code>ref_event_id</code> to the relevant <code>connectivity:connection_started</code>.<a href="#section-5.7-2" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="event-attemptoutcome">
-<section id="section-5.8">
-        <h3 id="name-event-attempt_outcome">
-<a href="#section-5.8" class="section-number selfRef">5.8. </a><a href="#name-event-attempt_outcome" class="section-name selfRef">Event: attempt_outcome</a>
-        </h3>
-<div class="lang-cddl sourcecode" id="section-5.8-1">
-<pre>
-HEAttemptOutcome = {
-        he_session_id: string
-        attempt_id: string
-        result: "success" | "failure" | "timeout" | "canceled"
-        error_code: string ?
-        connect_duration_ms: uint32 ?
-
-        * $$he-attemptoutcome-extension
-}
-</pre><a href="#section-5.8-1" class="pilcrow">¶</a>
-</div>
-</section>
-</div>
-<div id="event-racingwindowopened">
-<section id="section-5.9">
-        <h3 id="name-event-racing_window_opened">
-<a href="#section-5.9" class="section-number selfRef">5.9. </a><a href="#name-event-racing_window_opened" class="section-name selfRef">Event: racing_window_opened</a>
-        </h3>
-<div class="lang-cddl sourcecode" id="section-5.9-1">
-<pre>
-HERacingWindowOpened = {
-        he_session_id: string
-        window_id: string
-        max_parallel_attempts: uint32
-
-        * $$he-racingwindowopened-extension
-}
 </pre><a href="#section-5.9-1" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
-<div id="event-racingwindowclosed">
+<div id="event-attemptstarted">
 <section id="section-5.10">
-        <h3 id="name-event-racing_window_closed">
-<a href="#section-5.10" class="section-number selfRef">5.10. </a><a href="#name-event-racing_window_closed" class="section-name selfRef">Event: racing_window_closed</a>
+        <h3 id="name-event-attempt_started">
+<a href="#section-5.10" class="section-number selfRef">5.10. </a><a href="#name-event-attempt_started" class="section-name selfRef">Event: attempt_started</a>
         </h3>
 <div class="lang-cddl sourcecode" id="section-5.10-1">
 <pre>
-HERacingWindowClosed = {
-        he_session_id: string
-        window_id: string
+HEAttemptStarted = {
+        he_session_id: text
+        attempt_id: text
+        target: HEAttemptTarget
+        transport: "tcp" | "quic"
+        ref_event_id: text ?
 
-        * $$he-racingwindowclosed-extension
+        * $$he-attemptstarted-extension
 }
 </pre><a href="#section-5.10-1" class="pilcrow">¶</a>
 </div>
+<p id="section-5.10-2">QUIC implementations should set <code>ref_event_id</code> to the relevant <code>connectivity:connection_started</code>.<a href="#section-5.10-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="event-fallbacktimerset">
+<div id="event-attemptpended">
 <section id="section-5.11">
-        <h3 id="name-event-fallback_timer_set">
-<a href="#section-5.11" class="section-number selfRef">5.11. </a><a href="#name-event-fallback_timer_set" class="section-name selfRef">Event: fallback_timer_set</a>
+        <h3 id="name-event-attempt_pended">
+<a href="#section-5.11" class="section-number selfRef">5.11. </a><a href="#name-event-attempt_pended" class="section-name selfRef">Event: attempt_pended</a>
         </h3>
-<div class="lang-cddl sourcecode" id="section-5.11-1">
+<p id="section-5.11-1">Logged when a connection attempt's TLS handshake must be paused until
+SVCB/HTTPS responses are received, as required by Section 6.3 of HEv3
+(e.g., when DNS is cryptographically protected and ECH configuration
+is expected from SVCB records).<a href="#section-5.11-1" class="pilcrow">¶</a></p>
+<div class="lang-cddl sourcecode" id="section-5.11-2">
 <pre>
-HEFallbackTimerSet = {
-        he_session_id: string
-        timer_id: string
-        delay_ms: uint32
-        for_family: "ipv4" | "ipv6"
+HEAttemptPended = {
+        he_session_id: text
+        attempt_id: text
+        reason: "awaiting_svcb" / "awaiting_ech_config" / "dnssec_validation"
+        waiting_for: text ?
 
-        * $$he-fallbacktimerset-extension
+        * $$he-attemptpended-extension
 }
-</pre><a href="#section-5.11-1" class="pilcrow">¶</a>
+</pre><a href="#section-5.11-2" class="pilcrow">¶</a>
 </div>
+<p id="section-5.11-3">The <code>waiting_for</code> field <span class="bcp14">MAY</span> reference the <code>dns_id</code> of the outstanding
+SVCB/HTTPS query.<a href="#section-5.11-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="event-fallbacktimerfired">
+<div id="event-attemptresumed">
 <section id="section-5.12">
-        <h3 id="name-event-fallback_timer_fired">
-<a href="#section-5.12" class="section-number selfRef">5.12. </a><a href="#name-event-fallback_timer_fired" class="section-name selfRef">Event: fallback_timer_fired</a>
+        <h3 id="name-event-attempt_resumed">
+<a href="#section-5.12" class="section-number selfRef">5.12. </a><a href="#name-event-attempt_resumed" class="section-name selfRef">Event: attempt_resumed</a>
         </h3>
-<div class="lang-cddl sourcecode" id="section-5.12-1">
+<p id="section-5.12-1">Logged when a previously pended attempt resumes its handshake.<a href="#section-5.12-1" class="pilcrow">¶</a></p>
+<div class="lang-cddl sourcecode" id="section-5.12-2">
 <pre>
-HEFallbackTimerFired = {
-        he_session_id: string
-        timer_id: string
+HEAttemptResumed = {
+        he_session_id: text
+        attempt_id: text
+        trigger: "svcb_received" / "timeout" / "policy_override"
 
-        * $$he-fallbacktimerfired-extension
+        * $$he-attemptresumed-extension
 }
-</pre><a href="#section-5.12-1" class="pilcrow">¶</a>
+</pre><a href="#section-5.12-2" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
-<div id="event-fallbacktimercanceled">
+<div id="event-attemptoutcome">
 <section id="section-5.13">
-        <h3 id="name-event-fallback_timer_cancel">
-<a href="#section-5.13" class="section-number selfRef">5.13. </a><a href="#name-event-fallback_timer_cancel" class="section-name selfRef">Event: fallback_timer_canceled</a>
+        <h3 id="name-event-attempt_outcome">
+<a href="#section-5.13" class="section-number selfRef">5.13. </a><a href="#name-event-attempt_outcome" class="section-name selfRef">Event: attempt_outcome</a>
         </h3>
 <div class="lang-cddl sourcecode" id="section-5.13-1">
 <pre>
-HEFallbackTimerCanceled = {
-        he_session_id: string,
-        timer_id: string,
-        reason: "success” | “abort"
+HEAttemptOutcome = {
+        he_session_id: text
+        attempt_id: text
+        result: "success" | "failure" | "timeout" | "canceled"
+        error_code: text ?
+        connect_duration_ms: uint32 ?
 
-        * $$he-fallbacktimercanceled-extension
+        * $$he-attemptoutcome-extension
 }
 </pre><a href="#section-5.13-1" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
-<div id="event-connectionselected">
+<div id="event-racingwindowopened">
 <section id="section-5.14">
-        <h3 id="name-event-connection_selected">
-<a href="#section-5.14" class="section-number selfRef">5.14. </a><a href="#name-event-connection_selected" class="section-name selfRef">Event: connection_selected</a>
+        <h3 id="name-event-racing_window_opened">
+<a href="#section-5.14" class="section-number selfRef">5.14. </a><a href="#name-event-racing_window_opened" class="section-name selfRef">Event: racing_window_opened</a>
         </h3>
 <div class="lang-cddl sourcecode" id="section-5.14-1">
 <pre>
-HEConnectionSelected = {
-        he_session_id: string
-        attempt_id: string
-        ref_event_id: string ?
+HERacingWindowOpened = {
+        he_session_id: text
+        window_id: text
+        max_parallel_attempts: uint32
 
-        * $$he-connectionselected-extension
+        * $$he-racingwindowopened-extension
 }
 </pre><a href="#section-5.14-1" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
-<div id="event-connectionaborted">
+<div id="event-racingwindowclosed">
 <section id="section-5.15">
-        <h3 id="name-event-connection_aborted">
-<a href="#section-5.15" class="section-number selfRef">5.15. </a><a href="#name-event-connection_aborted" class="section-name selfRef">Event: connection_aborted</a>
+        <h3 id="name-event-racing_window_closed">
+<a href="#section-5.15" class="section-number selfRef">5.15. </a><a href="#name-event-racing_window_closed" class="section-name selfRef">Event: racing_window_closed</a>
         </h3>
 <div class="lang-cddl sourcecode" id="section-5.15-1">
 <pre>
-HEConnectionAborted = {
-        he_session_id: string
-        reason: string
+HERacingWindowClosed = {
+        he_session_id: text
+        window_id: text
 
-        * $$he-connectionaborted-extension
+        * $$he-racingwindowclosed-extension
 }
 </pre><a href="#section-5.15-1" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
-<div id="event-metrics">
+<div id="event-fallbacktimerset">
 <section id="section-5.16">
-        <h3 id="name-event-metrics">
-<a href="#section-5.16" class="section-number selfRef">5.16. </a><a href="#name-event-metrics" class="section-name selfRef">Event: metrics</a>
+        <h3 id="name-event-fallback_timer_set">
+<a href="#section-5.16" class="section-number selfRef">5.16. </a><a href="#name-event-fallback_timer_set" class="section-name selfRef">Event: fallback_timer_set</a>
         </h3>
 <div class="lang-cddl sourcecode" id="section-5.16-1">
 <pre>
+HEFallbackTimerSet = {
+        he_session_id: text
+        timer_id: text
+        delay_ms: uint32
+        for_family: "ipv4" | "ipv6"
+
+        * $$he-fallbacktimerset-extension
+}
+</pre><a href="#section-5.16-1" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="event-fallbacktimerfired">
+<section id="section-5.17">
+        <h3 id="name-event-fallback_timer_fired">
+<a href="#section-5.17" class="section-number selfRef">5.17. </a><a href="#name-event-fallback_timer_fired" class="section-name selfRef">Event: fallback_timer_fired</a>
+        </h3>
+<div class="lang-cddl sourcecode" id="section-5.17-1">
+<pre>
+HEFallbackTimerFired = {
+        he_session_id: text
+        timer_id: text
+
+        * $$he-fallbacktimerfired-extension
+}
+</pre><a href="#section-5.17-1" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="event-fallbacktimercanceled">
+<section id="section-5.18">
+        <h3 id="name-event-fallback_timer_cancel">
+<a href="#section-5.18" class="section-number selfRef">5.18. </a><a href="#name-event-fallback_timer_cancel" class="section-name selfRef">Event: fallback_timer_canceled</a>
+        </h3>
+<div class="lang-cddl sourcecode" id="section-5.18-1">
+<pre>
+HEFallbackTimerCanceled = {
+        he_session_id: text,
+        timer_id: text,
+        reason: "success” | “abort"
+
+        * $$he-fallbacktimercanceled-extension
+}
+</pre><a href="#section-5.18-1" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="event-connectionselected">
+<section id="section-5.19">
+        <h3 id="name-event-connection_selected">
+<a href="#section-5.19" class="section-number selfRef">5.19. </a><a href="#name-event-connection_selected" class="section-name selfRef">Event: connection_selected</a>
+        </h3>
+<div class="lang-cddl sourcecode" id="section-5.19-1">
+<pre>
+HEConnectionSelected = {
+        he_session_id: text
+        attempt_id: text
+        ref_event_id: text ?
+
+        * $$he-connectionselected-extension
+}
+</pre><a href="#section-5.19-1" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="event-connectionaborted">
+<section id="section-5.20">
+        <h3 id="name-event-connection_aborted">
+<a href="#section-5.20" class="section-number selfRef">5.20. </a><a href="#name-event-connection_aborted" class="section-name selfRef">Event: connection_aborted</a>
+        </h3>
+<div class="lang-cddl sourcecode" id="section-5.20-1">
+<pre>
+HEConnectionAborted = {
+        he_session_id: text
+        reason: text
+
+        * $$he-connectionaborted-extension
+}
+</pre><a href="#section-5.20-1" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="event-metrics">
+<section id="section-5.21">
+        <h3 id="name-event-metrics">
+<a href="#section-5.21" class="section-number selfRef">5.21. </a><a href="#name-event-metrics" class="section-name selfRef">Event: metrics</a>
+        </h3>
+<div class="lang-cddl sourcecode" id="section-5.21-1">
+<pre>
 HEMetrics = {
-        he_session_id: string
+        he_session_id: text
         tt_first_success_ms: uint32 ?
         first_success_family: "ipv4" | "ipv6" ?
         attempts_total: uint32
@@ -1723,24 +2017,24 @@ HEMetrics = {
 
         * $$he-metrics-extension
 }
-</pre><a href="#section-5.16-1" class="pilcrow">¶</a>
+</pre><a href="#section-5.21-1" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="conformance-requirements">
-<section id="section-5.17">
+<section id="section-5.22">
         <h3 id="name-conformance-requirements">
-<a href="#section-5.17" class="section-number selfRef">5.17. </a><a href="#name-conformance-requirements" class="section-name selfRef">Conformance Requirements</a>
+<a href="#section-5.22" class="section-number selfRef">5.22. </a><a href="#name-conformance-requirements" class="section-name selfRef">Conformance Requirements</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="section-5.17-1.1">
-            <p id="section-5.17-1.1.1">Every <code>attempt_started</code> <span class="bcp14">MUST</span> have exactly one <code>attempt_outcome</code>.<a href="#section-5.17-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-5.22-1.1">
+            <p id="section-5.22-1.1.1">Every <code>attempt_started</code> <span class="bcp14">MUST</span> have exactly one <code>attempt_outcome</code>.<a href="#section-5.22-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.17-1.2">
-            <p id="section-5.17-1.2.1"><code>connection_selected</code> <span class="bcp14">MUST</span> reference an attempt whose <code>result</code> is <code>"success"</code>.<a href="#section-5.17-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.22-1.2">
+            <p id="section-5.22-1.2.1"><code>connection_selected</code> <span class="bcp14">MUST</span> reference an attempt whose <code>result</code> is <code>"success"</code>.<a href="#section-5.22-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.17-1.3">
-            <p id="section-5.17-1.3.1">Exactly one <code>metrics</code> event <span class="bcp14">SHOULD</span> appear per HE session.<a href="#section-5.17-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.22-1.3">
+            <p id="section-5.22-1.3.1">Exactly one <code>metrics</code> event <span class="bcp14">SHOULD</span> appear per HE session.<a href="#section-5.22-1.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1794,7 +2088,7 @@ HEMetrics = {
         <dd class="break"></dd>
 <dt id="section-8-2.5">Event Types:</dt>
         <dd style="margin-left: 1.5em" id="section-8-2.6">
-          <p id="section-8-2.6.1">config_set, config_updated, dns_query_started, dns_query_finished, candidate_discovered, attempt_scheduled, attempt_started, attempt_outcome, racing_window_opened, racing_window_closed, fallback_timer_set, fallback_timer_fired, fallback_timer_canceled, connection_selected, connection_aborted, metrics<a href="#section-8-2.6.1" class="pilcrow">¶</a></p>
+          <p id="section-8-2.6.1">config_set, config_updated, dns_query_started, dns_query_finished, candidate_discovered, candidates_sorted, candidate_removed, candidates_resorted, attempt_scheduled, attempt_started, attempt_pended, attempt_resumed, attempt_outcome, racing_window_opened, racing_window_closed, fallback_timer_set, fallback_timer_fired, fallback_timer_canceled, connection_selected, connection_aborted, metrics<a href="#section-8-2.6.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 <dt id="section-8-2.7">Description:</dt>

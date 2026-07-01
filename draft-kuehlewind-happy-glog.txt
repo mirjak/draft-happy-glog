@@ -2,7 +2,7 @@
 
 
 
-happy                                                       M. Kühlewind
+Heuristics and Algorithms to Prioritize Protocol deploYment M. Kühlewind
 Internet-Draft                                                  Ericsson
 Intended status: Informational                               1 July 2026
 Expires: 2 January 2027
@@ -25,16 +25,18 @@ About This Document
    This note is to be removed before publishing as an RFC.
 
    The latest revision of this draft can be found at
-   https://example.com/LATEST.  Status information for this document may
-   be found at https://datatracker.ietf.org/doc/draft-kuehlewind-happy-
-   glog/.
+   https://mirjak.github.io/draft-happy-glog/draft-kuehlewind-happy-
+   glog.html.  Status information for this document may be found at
+   https://datatracker.ietf.org/doc/draft-kuehlewind-happy-glog/.
 
-   Discussion of this document takes place on the WG Working Group
-   mailing list (mailto:WG@example.com), which is archived at
-   https://example.com/WG.
+   Discussion of this document takes place on the Heuristics and
+   Algorithms to Prioritize Protocol deploYment Working Group mailing
+   list (mailto:happy@ietf.org), which is archived at
+   https://mailarchive.ietf.org/arch/browse/happy/.  Subscribe at
+   https://www.ietf.org/mailman/listinfo/happy/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/USER/REPO.
+   https://github.com/mirjak/draft-happy-glog.
 
 Status of This Memo
 
@@ -83,18 +85,23 @@ Table of Contents
      5.3.  Event: dns_query_started
      5.4.  Event: dns_query_finished
      5.5.  Event: candidate_discovered
-     5.6.  Event: attempt_scheduled
-     5.7.  Event: attempt_started
-     5.8.  Event: attempt_outcome
-     5.9.  Event: racing_window_opened
-     5.10. Event: racing_window_closed
-     5.11. Event: fallback_timer_set
-     5.12. Event: fallback_timer_fired
-     5.13. Event: fallback_timer_canceled
-     5.14. Event: connection_selected
-     5.15. Event: connection_aborted
-     5.16. Event: metrics
-     5.17. Conformance Requirements
+     5.6.  Event: candidates_sorted
+     5.7.  Event: candidate_removed
+     5.8.  Event: candidates_resorted
+     5.9.  Event: attempt_scheduled
+     5.10. Event: attempt_started
+     5.11. Event: attempt_pended
+     5.12. Event: attempt_resumed
+     5.13. Event: attempt_outcome
+     5.14. Event: racing_window_opened
+     5.15. Event: racing_window_closed
+     5.16. Event: fallback_timer_set
+     5.17. Event: fallback_timer_fired
+     5.18. Event: fallback_timer_canceled
+     5.19. Event: connection_selected
+     5.20. Event: connection_aborted
+     5.21. Event: metrics
+     5.22. Conformance Requirements
    6.  Correlation with transport protocols
    7.  Security Considerations
    8.  IANA Considerations
@@ -160,47 +167,123 @@ Table of Contents
 4.1.  Attempt Target
 
    HEAttemptTarget = {
-           address: string
+           address: text
            port: uint16
-           family: "ipv4" | "ipv6"
-           interface: string ?
-           path_id: string ?
+           family: "ipv4" / "ipv6"
+           interface: text ?
+           path_id: text ?
+           alpn: [+ text] ?
+           service_name: text ?
+           service_priority: uint32 ?
+           ech_offered: bool ?
 
            * $he-attempttarget-extension
    }
 
+   The alpn field records the negotiated ALPN set for this target
+   derived from SVCB records.  The service_name and service_priority
+   fields identify which SVCB ServiceMode record this target originates
+   from.  The ech_offered field indicates whether ECH will be attempted
+   on this connection.
+
 4.2.  Policy
 
    HEPolicy = {
-           base_delay_ms: uint32
-           jitter_ms: uint32
-           max_parallel_attempts: uint32
-           prefer_ipv6: bool
-           prefer_last_success_family: bool
-           ipv6_precedence_offset: int32
-           initial_family: "ipv4" | "ipv6" | "auto"
+           resolution_delay_ms: uint32 ?
+           preferred_address_family_count: uint32 ?
+           connection_attempt_delay_ms: uint32 ?
+           min_connection_attempt_delay_ms: uint32 ?
+           max_connection_attempt_delay_ms: uint32 ?
+           max_parallel_attempts: uint32 ?
+           last_resort_local_synthesis_delay_ms: uint32 ?
+           preferred_family: "ipv4" / "ipv6" / "auto" ?
            success_definition:
-                   "tcp_connected" |
-                   "tls_handshake_complete" |
-                   "quic_1rtt_ready"  ?
+                   "tcp_connected" /
+                   "tls_handshake_complete" /
+                   "quic_1rtt_ready" ?
+           use_historical_rtt: bool ?
 
            * $he-policy-extension
    }
 
+   The fields correspond to the configurable values defined in Section 9
+   of HEv3:
+
+   *  resolution_delay_ms: Time to wait for preferred-family and SVCB/
+      HTTPS records after receiving initial answers (recommended 50ms).
+
+   *  preferred_address_family_count: Number of addresses of the
+      preferred family attempted before trying the other family
+      (recommended 1).
+
+   *  connection_attempt_delay_ms: Delay between connection attempts in
+      the absence of RTT data (recommended 250ms).
+
+   *  min_connection_attempt_delay_ms: Floor for the connection attempt
+      delay (recommended 100ms, MUST NOT be less than 10ms).
+
+   *  max_connection_attempt_delay_ms: Ceiling for the connection
+      attempt delay (recommended 2s).
+
+   *  max_parallel_attempts: Maximum number of connection attempts
+      allowed in parallel.
+
+   *  last_resort_local_synthesis_delay_ms: Time to wait before querying
+      A records for local NAT64 synthesis when AAAA attempts are failing
+      on IPv6-only networks (recommended 2s).
+
+   *  preferred_family: The address family assumed to have better
+      connectivity.
+
+   *  success_definition: What constitutes a successful connection
+      establishment.
+
+   *  use_historical_rtt: Whether historical RTT data is used to order
+      destinations and adjust attempt delays.
+
    If omitted, success_definition defaults to:
 
-   *  tcp_connected for TCP/TLS stacks 
+   *  tcp_connected for plain TCP stacks
+
+   *  tls_handshake_complete for TCP+TLS stacks 
 
    *  quic_1rtt_ready for QUIC stacks
 
 4.3.  DNS Result
 
-   HEDNSResult = {
-           address: string
-           family: "ipv4" | "ipv6"
+   DNS results can represent either address records (A/AAAA) or service
+   records (SVCB/HTTPS).
+
+   HEDNSResult = HEDNSAddressResult / HEDNSServiceResult
+
+   HEDNSAddressResult = {
+           type: "address"
+           address: text
+           family: "ipv4" / "ipv6"
            ttl_s: uint32 ?
-           priority: uint32 ?
+
+           * $he-dnsaddressresult-extension
    }
+
+   HEDNSServiceResult = {
+           type: "service"
+           mode: "alias" / "servicemode"
+           target_name: text
+           priority: uint32 ?
+           alpn: [+ text] ?
+           no_default_alpn: bool ?
+           ech_config: text ?
+           ipv4hint: [+ text] ?
+           ipv6hint: [+ text] ?
+           ttl_s: uint32 ?
+
+           * $he-dnsserviceresult-extension
+   }
+
+   The ech_config field contains a base64-encoded ECHConfigList when
+   present in the SVCB/HTTPS record.  The mode field distinguishes
+   AliasMode records (which require a follow-up query) from ServiceMode
+   records that carry usable service parameters.
 
 5.  Event Definitions
 
@@ -210,7 +293,7 @@ Table of Contents
 5.1.  Event: config_set
 
    HEConfigSet = {
-           he_session_id: string
+           he_session_id: text
            policy: HEPolicy,
            reason:
                    "startup" |
@@ -224,7 +307,7 @@ Table of Contents
 5.2.  Event: config_updated
 
    HEConfigUpdated = {
-           he_session_id: string
+           he_session_id: text
            changed: HEPolicy
            reason:
                    "network_change" |
@@ -238,11 +321,11 @@ Table of Contents
 5.3.  Event: dns_query_started
 
    HEDNSQueryStarted = {
-           he_session_id: string
-           dns_id: string
-           hostname: string
-           qtypes: [ "A" | "AAAA"]+
-           bootstrap_hint: string ?
+           he_session_id: text
+           dns_id: text
+           hostname: text
+           qtypes: [+ "A" / "AAAA" / "SVCB" / "HTTPS"]
+           bootstrap_hint: text ?
 
            * $$he-dnsquerystarted-extension
    }
@@ -250,33 +333,161 @@ Table of Contents
 5.4.  Event: dns_query_finished
 
    HEDNSQueryFinished = {
-           he_session_id: string
-           dns_id: string
-           hostname: string
-           results: [HEDNSResult]
-           error_code: string ?
-           error_message: string ?
+           he_session_id: text
+           dns_id: text
+           hostname: text
+           results: [* HEDNSResult]
+           answer_type: "positive" / "negative" / "error" ?
+           error_code: text ?
+           error_message: text ?
            duration_ms: uint32
+           dnssec_validated: bool ?
+           is_alias_follow: bool ?
 
            * $$he-dnsqueryfinished-extension
    }
 
+   The answer_type field distinguishes positive (non-empty) from
+   negative (empty, no error) and error responses, which is significant
+   for HEv3's async resolution logic (Section 4.2).  The
+   dnssec_validated field indicates whether the response was
+   cryptographically validated, relevant for determining whether SVCB-
+   dependent handshakes must be pended (Section 6.3).  The
+   is_alias_follow field is set to true when this query was triggered by
+   an AliasMode SVCB/HTTPS record requiring a follow-up resolution.
+
 5.5.  Event: candidate_discovered
 
    HECandidateDiscovered = {
-           he_session_id: string
-           source: "dns" | "cache" | "alt_svc" | "synth" | "preconnect"
+           he_session_id: text
+           source: "dns" / "cache" / "alt_svc" / "synth" / "preconnect" /
+                   "svcb_hint" / "nat64_synthesis"
            target: HEAttemptTarget
-           rank: uint32
+           group_id: text ?
+           supersedes: text ?
 
            * $$he-candidatediscovered-extension
    }
 
-5.6.  Event: attempt_scheduled
+   The source value "svcb_hint" indicates the address came from ipv4hint
+   or ipv6hint parameters in a SVCB/HTTPS record.  The "nat64_synthesis"
+   value indicates a locally synthesized IPv6 address for NAT64
+   traversal.
+
+   The group_id field identifies which protocol/priority group this
+   candidate belongs to (per Section 5.1 and 5.2 of HEv3).  The
+   supersedes field contains the address of an SVCB hint that this
+   candidate replaces once authoritative A/AAAA records arrive (per
+   Section 7 of HEv3).
+
+5.6.  Event: candidates_sorted
+
+   Logged once sufficient DNS answers have been received (per
+   Section 4.2 of HEv3) and the implementation has applied the three-
+   level sorting algorithm (Section 5).  This event captures the full
+   grouped and ordered candidate list before racing begins.
+
+   HECandidatesSorted = {
+           he_session_id: text
+           groups: [+ HECandidateGroup]
+
+           * $$he-candidatessorted-extension
+   }
+
+   HECandidateGroup = {
+           group_id: text
+           alpn: [+ text] ?
+           ech_available: bool ?
+           service_priority: uint32 ?
+           candidates: [+ HEAttemptTarget]
+   }
+
+   The groups array is ordered by priority.  Within each group:
+
+   *  alpn captures the application protocol set that defines this group
+      (Section 5.1 of HEv3).
+
+   *  ech_available indicates whether ECH configuration is available for
+      endpoints in this group (Section 5.1 of HEv3).
+
+   *  service_priority reflects the SVCB SvcPriority value for this
+      group (Section 5.2 of HEv3).  Groups with equal priority SHOULD be
+      shuffled randomly.
+
+   *  candidates is ordered per Section 5.3 of HEv3: RFC 6724
+      destination address selection, historical RTT preferences, and
+      address family interleaving applied.
+
+   For simple cases without SVCB records, a single group with all
+   candidates is sufficient.
+
+5.7.  Event: candidate_removed
+
+   Logged when a candidate address is removed from the list during
+   connection setup (per Section 7 of HEv3).
+
+   HECandidateRemoved = {
+           he_session_id: text
+           target: HEAttemptTarget
+           reason: "ttl_expired" / "svcb_hint_replaced" / "dns_negative" / "alpn_mismatch"
+           had_active_attempt: bool ?
+
+           * $$he-candidateremoved-extension
+   }
+
+   The reason field indicates why the candidate was removed:
+
+   *  "ttl_expired": The DNS TTL for this address expired before an
+      attempt was started.
+
+   *  "svcb_hint_replaced": Authoritative A/AAAA records arrived and
+      this hint address was absent from them (Section 7.3 of SVCB).
+
+   *  "dns_negative": A previously positive record was replaced by a
+      negative response (e.g., via DNS push notification).
+
+   *  "alpn_mismatch": The SVCB ALPN set does not contain protocols the
+      client supports (Section 6.2 of HEv3).
+
+   The had_active_attempt field indicates whether an in-progress attempt
+   exists for this target; per HEv3 Section 7, such attempts SHOULD NOT
+   be canceled.
+
+5.8.  Event: candidates_resorted
+
+   Logged when the candidate list is re-sorted due to new addresses
+   arriving mid-race (per Section 7 of HEv3).  Re-sorting ensures that
+   address family interleaving and priority rules are maintained
+   correctly regardless of when addresses arrive.
+
+   HECandidatesResorted = {
+           he_session_id: text
+           trigger: "new_addresses" / "new_svcb" / "dns_push"
+           new_order: [+ HEAttemptTarget]
+
+           * $$he-candidatesresorted-extension
+   }
+
+   The trigger field captures why re-sorting occurred:
+
+   *  "new_addresses": New A/AAAA records arrived (e.g., delayed IPv4
+      after an IPv6-only start).
+
+   *  "new_svcb": New SVCB/HTTPS ServiceMode records changed grouping or
+      priorities.
+
+   *  "dns_push": A DNS push notification added addresses.
+
+   The new_order array contains the full re-sorted candidate list as
+   HEAttemptTarget elements.  Position in the array implies the new
+   rank.  Only pending candidates (those not yet attempted or currently
+   in progress) are included.
+
+5.9.  Event: attempt_scheduled
 
    HEAttemptScheduled = {
-           he_session_id: string
-           attempt_id: string
+           he_session_id: text
+           attempt_id: text
            target: HEAttemptTarget
            scheduled_after_ms: uint32
            priority: uint32
@@ -289,14 +500,14 @@ Table of Contents
            * $$he-attemptscheduled-extension
    }
 
-5.7.  Event: attempt_started
+5.10.  Event: attempt_started
 
    HEAttemptStarted = {
-           he_session_id: string
-           attempt_id: string
+           he_session_id: text
+           attempt_id: text
            target: HEAttemptTarget
            transport: "tcp" | "quic"
-           ref_event_id: string ?
+           ref_event_id: text ?
 
            * $$he-attemptstarted-extension
    }
@@ -304,90 +515,121 @@ Table of Contents
    QUIC implementations should set ref_event_id to the relevant
    connectivity:connection_started.
 
-5.8.  Event: attempt_outcome
+5.11.  Event: attempt_pended
+
+   Logged when a connection attempt's TLS handshake must be paused until
+   SVCB/HTTPS responses are received, as required by Section 6.3 of HEv3
+   (e.g., when DNS is cryptographically protected and ECH configuration
+   is expected from SVCB records).
+
+   HEAttemptPended = {
+           he_session_id: text
+           attempt_id: text
+           reason: "awaiting_svcb" / "awaiting_ech_config" / "dnssec_validation"
+           waiting_for: text ?
+
+           * $$he-attemptpended-extension
+   }
+
+   The waiting_for field MAY reference the dns_id of the outstanding
+   SVCB/HTTPS query.
+
+5.12.  Event: attempt_resumed
+
+   Logged when a previously pended attempt resumes its handshake.
+
+   HEAttemptResumed = {
+           he_session_id: text
+           attempt_id: text
+           trigger: "svcb_received" / "timeout" / "policy_override"
+
+           * $$he-attemptresumed-extension
+   }
+
+5.13.  Event: attempt_outcome
 
    HEAttemptOutcome = {
-           he_session_id: string
-           attempt_id: string
+           he_session_id: text
+           attempt_id: text
            result: "success" | "failure" | "timeout" | "canceled"
-           error_code: string ?
+           error_code: text ?
            connect_duration_ms: uint32 ?
 
            * $$he-attemptoutcome-extension
    }
 
-5.9.  Event: racing_window_opened
+5.14.  Event: racing_window_opened
 
    HERacingWindowOpened = {
-           he_session_id: string
-           window_id: string
+           he_session_id: text
+           window_id: text
            max_parallel_attempts: uint32
 
            * $$he-racingwindowopened-extension
    }
 
-5.10.  Event: racing_window_closed
+5.15.  Event: racing_window_closed
 
    HERacingWindowClosed = {
-           he_session_id: string
-           window_id: string
+           he_session_id: text
+           window_id: text
 
            * $$he-racingwindowclosed-extension
    }
 
-5.11.  Event: fallback_timer_set
+5.16.  Event: fallback_timer_set
 
    HEFallbackTimerSet = {
-           he_session_id: string
-           timer_id: string
+           he_session_id: text
+           timer_id: text
            delay_ms: uint32
            for_family: "ipv4" | "ipv6"
 
            * $$he-fallbacktimerset-extension
    }
 
-5.12.  Event: fallback_timer_fired
+5.17.  Event: fallback_timer_fired
 
    HEFallbackTimerFired = {
-           he_session_id: string
-           timer_id: string
+           he_session_id: text
+           timer_id: text
 
            * $$he-fallbacktimerfired-extension
    }
 
-5.13.  Event: fallback_timer_canceled
+5.18.  Event: fallback_timer_canceled
 
    HEFallbackTimerCanceled = {
-           he_session_id: string,
-           timer_id: string,
+           he_session_id: text,
+           timer_id: text,
            reason: "success” | “abort"
 
            * $$he-fallbacktimercanceled-extension
    }
 
-5.14.  Event: connection_selected
+5.19.  Event: connection_selected
 
    HEConnectionSelected = {
-           he_session_id: string
-           attempt_id: string
-           ref_event_id: string ?
+           he_session_id: text
+           attempt_id: text
+           ref_event_id: text ?
 
            * $$he-connectionselected-extension
    }
 
-5.15.  Event: connection_aborted
+5.20.  Event: connection_aborted
 
    HEConnectionAborted = {
-           he_session_id: string
-           reason: string
+           he_session_id: text
+           reason: text
 
            * $$he-connectionaborted-extension
    }
 
-5.16.  Event: metrics
+5.21.  Event: metrics
 
    HEMetrics = {
-           he_session_id: string
+           he_session_id: text
            tt_first_success_ms: uint32 ?
            first_success_family: "ipv4" | "ipv6" ?
            attempts_total: uint32
@@ -397,7 +639,7 @@ Table of Contents
            * $$he-metrics-extension
    }
 
-5.17.  Conformance Requirements
+5.22.  Conformance Requirements
 
    *  Every attempt_started MUST have exactly one attempt_outcome.
 
@@ -432,11 +674,12 @@ Table of Contents
    Namespace:  nev3
 
    Event Types:  config_set, config_updated, dns_query_started,
-      dns_query_finished, candidate_discovered, attempt_scheduled,
-      attempt_started, attempt_outcome, racing_window_opened,
-      racing_window_closed, fallback_timer_set, fallback_timer_fired,
-      fallback_timer_canceled, connection_selected, connection_aborted,
-      metrics
+      dns_query_finished, candidate_discovered, candidates_sorted,
+      candidate_removed, candidates_resorted, attempt_scheduled,
+      attempt_started, attempt_pended, attempt_resumed, attempt_outcome,
+      racing_window_opened, racing_window_closed, fallback_timer_set,
+      fallback_timer_fired, fallback_timer_canceled,
+      connection_selected, connection_aborted, metrics
 
    Description:  Event definitions for logging HEv3 events
 
