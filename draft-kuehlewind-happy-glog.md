@@ -496,64 +496,59 @@ HEAttemptOutcome = {
 }
 ~~~
 
-## Event: racing_window_opened
+## Event: next_attempt_timer_set
+
+Logged when the Next Connection Attempt Timer is set or adjusted. This
+timer controls when the next connection attempt begins (Section 6 of HEv3).
 
 ~~~ cddl
-HERacingWindowOpened = {
+HENextAttemptTimerSet = {
 	he_session_id: text
-	window_id: text
-	max_parallel_attempts: uint32
-
-	* $$he-racingwindowopened-extension
-}
-~~~
-
-## Event: racing_window_closed
-
-~~~ cddl
-HERacingWindowClosed = {
-	he_session_id: text
-	window_id: text
-
-	* $$he-racingwindowclosed-extension
-}
-~~~
-
-## Event: fallback_timer_set
-
-~~~ cddl
-HEFallbackTimerSet = {
-	he_session_id: text
-	timer_id: text
 	delay_ms: uint32
-	for_family: "ipv4" | "ipv6"
+	reason: "initial" / "rtt_based" / "handshake_progress" ?
 
-	* $$he-fallbacktimerset-extension
+	* $$he-nextattemptimerset-extension
 }
 ~~~
 
-## Event: fallback_timer_fired
+The `reason` field captures why the delay was chosen:
+
+* `"initial"`: Using the configured Connection Attempt Delay.
+* `"rtt_based"`: Delay derived from historical RTT data or estimated
+  retransmission timeout.
+* `"handshake_progress"`: Timer extended after partial handshake completion
+  (e.g., TCP connected, waiting for TLS — per Section 6.1 of HEv3).
+
+## Event: next_attempt_timer_fired
+
+Logged when the timer fires and the next connection attempt is triggered.
 
 ~~~ cddl
-HEFallbackTimerFired = {
+HENextAttemptTimerFired = {
 	he_session_id: text
-  	timer_id: text
 
-	* $$he-fallbacktimerfired-extension
+	* $$he-nextattemptimerfired-extension
 }
 ~~~
 
-## Event: fallback_timer_canceled
+## Event: next_attempt_timer_canceled
+
+Logged when the timer is canceled before firing.
 
 ~~~ cddl
-HEFallbackTimerCanceled = {
-	he_session_id: text,
- 	timer_id: text,
-	reason: "success” | “abort"
+HENextAttemptTimerCanceled = {
+	he_session_id: text
+	reason: "success" / "abort" / "list_exhausted"
 
-	* $$he-fallbacktimercanceled-extension
+	* $$he-nextattemptimercanceled-extension
 }
 ~~~
+
+The `reason` field indicates why the timer was canceled:
+
+* `"success"`: A connection attempt succeeded.
+* `"abort"`: The HE session was aborted.
+* `"list_exhausted"`: All candidates have been attempted.
 
 ## Event: connection_selected
 
@@ -626,7 +621,7 @@ Namespace:
 : nev3
 
 Event Types:
-:  config_set, config_updated, dns_query_started, dns_query_finished, candidate_discovered, candidates_sorted, candidate_removed, candidates_resorted, attempt_scheduled, attempt_started, attempt_pended, attempt_resumed, attempt_outcome, racing_window_opened, racing_window_closed, fallback_timer_set, fallback_timer_fired, fallback_timer_canceled, connection_selected, connection_aborted, metrics
+:  config_set, config_updated, dns_query_started, dns_query_finished, candidate_discovered, candidates_sorted, candidate_removed, candidates_resorted, attempt_scheduled, attempt_started, attempt_pended, attempt_resumed, attempt_outcome, next_attempt_timer_set, next_attempt_timer_fired, next_attempt_timer_canceled, connection_selected, connection_aborted, metrics
 
 Description:
 : Event definitions for logging HEv3 events
