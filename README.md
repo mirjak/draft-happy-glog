@@ -4,16 +4,16 @@
 
 This is the working area for the individual Internet-Draft, "Happy Eyeballs v3 (HEv3) Event Logging with qlog".
 
-* [Editor's Copy](https://mirjak.github.io/draft-happy-glog/#go.draft-kuehlewind-happy-glog.html)
-* [Datatracker Page](https://datatracker.ietf.org/doc/draft-kuehlewind-happy-glog)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-kuehlewind-happy-glog)
-* [Compare Editor's Copy to Individual Draft](https://mirjak.github.io/draft-happy-glog/#go.draft-kuehlewind-happy-glog.diff)
+* [Editor's Copy](https://mirjak.github.io/draft-happy-glog/#go.draft-kuehlewind-happy-qlog.html)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-kuehlewind-happy-qlog)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-kuehlewind-happy-qlog)
+* [Compare Editor's Copy to Individual Draft](https://mirjak.github.io/draft-happy-qlog/#go.draft-kuehlewind-happy-qlog.diff)
 
 
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/mirjak/draft-happy-glog/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/mirjak/draft-happy-qlog/blob/main/CONTRIBUTING.md).
 
 The contributing file also has tips on how to make contributions, if you
 don't already know how to do that.
