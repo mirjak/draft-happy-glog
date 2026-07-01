@@ -124,25 +124,50 @@ this connection.
 
 ~~~ cddl
 HEPolicy = {
-	base_delay_ms: uint32
-	jitter_ms: uint32
-	max_parallel_attempts: uint32
-	prefer_ipv6: bool
-	prefer_last_success_family: bool
-	ipv6_precedence_offset: int32
-	initial_family: "ipv4" | "ipv6" | "auto"
+	resolution_delay_ms: uint32 ?
+	preferred_address_family_count: uint32 ?
+	connection_attempt_delay_ms: uint32 ?
+	min_connection_attempt_delay_ms: uint32 ?
+	max_connection_attempt_delay_ms: uint32 ?
+	max_parallel_attempts: uint32 ?
+	last_resort_local_synthesis_delay_ms: uint32 ?
+	preferred_family: "ipv4" / "ipv6" / "auto" ?
 	success_definition:
-		"tcp_connected" |
-		"tls_handshake_complete" |
-		"quic_1rtt_ready"  ?
+		"tcp_connected" /
+		"tls_handshake_complete" /
+		"quic_1rtt_ready" ?
+	use_historical_rtt: bool ?
 
 	* $he-policy-extension
 }
 ~~~
 
+The fields correspond to the configurable values defined in Section 9 of HEv3:
+
+* `resolution_delay_ms`: Time to wait for preferred-family and SVCB/HTTPS
+  records after receiving initial answers (recommended 50ms).
+* `preferred_address_family_count`: Number of addresses of the preferred
+  family attempted before trying the other family (recommended 1).
+* `connection_attempt_delay_ms`: Delay between connection attempts in the
+  absence of RTT data (recommended 250ms).
+* `min_connection_attempt_delay_ms`: Floor for the connection attempt delay
+  (recommended 100ms, MUST NOT be less than 10ms).
+* `max_connection_attempt_delay_ms`: Ceiling for the connection attempt delay
+  (recommended 2s).
+* `max_parallel_attempts`: Maximum number of connection attempts allowed
+  in parallel.
+* `last_resort_local_synthesis_delay_ms`: Time to wait before querying A
+  records for local NAT64 synthesis when AAAA attempts are failing on
+  IPv6-only networks (recommended 2s).
+* `preferred_family`: The address family assumed to have better connectivity.
+* `success_definition`: What constitutes a successful connection establishment.
+* `use_historical_rtt`: Whether historical RTT data is used to order
+  destinations and adjust attempt delays.
+
 If omitted, `success_definition` defaults to:
 
-* `tcp_connected` for TCP/TLS stacks 
+* `tcp_connected` for plain TCP stacks
+* `tls_handshake_complete` for TCP+TLS stacks 
 * `quic_1rtt_ready` for QUIC stacks
 
 ## DNS Result
