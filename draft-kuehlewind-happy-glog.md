@@ -151,7 +151,7 @@ The fields correspond to the configurable values defined in Section 9 of HEv3:
 * `connection_attempt_delay_ms`: Delay between connection attempts in the
   absence of RTT data (recommended 250ms).
 * `min_connection_attempt_delay_ms`: Floor for the connection attempt delay
-  (recommended 100ms, MUST NOT be less than 10ms).
+  (recommended 100ms, must not be less than 10ms).
 * `max_connection_attempt_delay_ms`: Ceiling for the connection attempt delay
   (recommended 2s).
 * `max_parallel_attempts`: Maximum number of connection attempts allowed
@@ -213,7 +213,13 @@ Each event uses: 
 	`name: "hev3:<event>"`
 with the `<event>` type identifier defined below in the section headings.
 
+All events include a `he_session_id` field that uniquely identifies the
+Happy Eyeballs session. This allows correlation of all events belonging
+to a single connection establishment attempt.
+
 ## Event: config_set
+
+Logged when the HE policy is initially configured for a session.
 
 ~~~ cddl
 HEConfigSet = {
@@ -229,7 +235,17 @@ HEConfigSet = {
 }
 ~~~
 
+The `policy` field contains the full initial policy configuration. The
+`reason` field indicates what triggered the configuration:
+
+* `"startup"`: Default policy applied at application start.
+* `"network_change"`: Policy set in response to a network transition.
+* `"app_config"`: Policy provided by the application.
+* `"persisted_state"`: Policy restored from previously saved state.
+
 ## Event: config_updated
+
+Logged when the HE policy changes during a session.
 
 ~~~ cddl
 HEConfigUpdated = {
@@ -245,7 +261,18 @@ HEConfigUpdated = {
 }
 ~~~
 
+The `changed` field contains the updated policy configuration.
+The `reason` field indicates what triggered the update:
+
+* `"network_change"`: Policy updated due to a network transition.
+* `"admin"`: Policy changed by an administrator or system setting.
+* `"app_hint"`: Application provided updated preferences.
+* `"learned_preference"`: Policy adjusted based on observed behavior
+  (e.g., learned RTT data).
+
 ## Event: dns_query_started
+
+Logged when a DNS query is initiated as part of hostname resolution.
 
 ~~~ cddl
 HEDNSQueryStarted = {
@@ -258,6 +285,12 @@ HEDNSQueryStarted = {
 	* $$he-dnsquerystarted-extension
 }
 ~~~
+
+The `dns_id` uniquely identifies this query within the session and is used
+to correlate with the corresponding `dns_query_finished` event. The
+`hostname` is the name being resolved. The `qtypes` array lists the DNS
+record types being queried. The `bootstrap_hint` field optionally contains
+an address hint used to reach the DNS resolver itself.
 
 ## Event: dns_query_finished
 
@@ -363,7 +396,7 @@ The `groups` array is ordered by priority. Within each group:
 * `ech_available` indicates whether ECH configuration is available for
   endpoints in this group (Section 5.1 of HEv3).
 * `service_priority` reflects the SVCB SvcPriority value for this group
-  (Section 5.2 of HEv3). Groups with equal priority SHOULD be shuffled
+  (Section 5.2 of HEv3). Groups with equal priority are shuffled
   randomly.
 * `candidates` is ordered per Section 5.3 of HEv3: RFC 6724 destination
   address selection, historical RTT preferences, and address family
@@ -400,7 +433,7 @@ The `reason` field indicates why the candidate was removed:
   client supports (Section 6.2 of HEv3).
 
 The `had_active_attempt` field indicates whether an in-progress attempt
-exists for this target; per HEv3 Section 7, such attempts SHOULD NOT be
+exists for this target; per HEv3 Section 7, such attempts are not
 canceled.
 
 ## Event: candidates_resorted
@@ -435,13 +468,14 @@ are included.
 
 ## Event: attempt_scheduled
 
+Logged when a connection attempt is scheduled to start after a delay.
+
 ~~~ cddl
 HEAttemptScheduled = {
 	he_session_id: text
 	attempt_id: text
 	target: HEAttemptTarget
 	scheduled_after_ms: uint32
-	priority: uint32
 	reason:
 		"policy_timer" /
 		"dns_completed" /
@@ -454,7 +488,22 @@ HEAttemptScheduled = {
 }
 ~~~
 
+The `attempt_id` uniquely identifies this attempt within the session. The
+`scheduled_after_ms` field indicates the delay before the attempt will
+start. The `reason` field indicates what triggered scheduling:
+
+* `"policy_timer"`: The Next Connection Attempt Timer fired.
+* `"dns_completed"`: DNS resolution completed, enabling the first attempt.
+* `"resolution_delay_expired"`: The Resolution Delay timer expired
+  (Section 4.2 of HEv3).
+* `"racing_window"`: Scheduled as part of parallel racing.
+* `"retry"`: A retry of a previously failed attempt.
+* `"last_resort_synthesis"`: The Last Resort Local Synthesis Delay expired,
+  triggering a fallback A query and NAT64 synthesis (Section 8.4 of HEv3).
+
 ## Event: attempt_started
+
+Logged when a connection attempt begins (i.e., the first packet is sent).
 
 ~~~ cddl
 HEAttemptStarted = {
@@ -468,7 +517,10 @@ HEAttemptStarted = {
 }
 ~~~
 
-QUIC implementations should set `ref_event_id` to the relevant `connectivity:connection_started`.
+The `transport` field indicates the transport protocol used for this
+attempt. The `ref_event_id` field may reference a related event in another
+qlog event schema; QUIC implementations should set it to the relevant
+`connectivity:connection_started` event.
 
 ## Event: attempt_pended
 
@@ -488,7 +540,7 @@ HEAttemptPended = {
 }
 ~~~
 
-The `waiting_for` field MAY reference the `dns_id` of the outstanding
+The `waiting_for` field may reference the `dns_id` of the outstanding
 SVCB/HTTPS query.
 
 ## Event: attempt_resumed
@@ -505,7 +557,17 @@ HEAttemptResumed = {
 }
 ~~~
 
+The `trigger` field indicates what unblocked the attempt:
+
+* `"svcb_received"`: The awaited SVCB/HTTPS response arrived.
+* `"timeout"`: A timeout expired while waiting; proceeding without the
+  expected information.
+* `"policy_override"`: The implementation decided to proceed despite not
+  receiving the expected response (e.g., opportunistic ECH).
+
 ## Event: attempt_outcome
+
+Logged when a connection attempt reaches a terminal state.
 
 ~~~ cddl
 HEAttemptOutcome = {
@@ -518,6 +580,18 @@ HEAttemptOutcome = {
 	* $$he-attemptoutcome-extension
 }
 ~~~
+
+The `result` field indicates the outcome:
+
+* `"success"`: The connection was established per the `success_definition`
+  in the policy.
+* `"failure"`: The attempt failed (e.g., connection refused, TLS error).
+* `"timeout"`: The attempt timed out without completing.
+* `"canceled"`: The attempt was canceled because another attempt succeeded.
+
+The `error_code` field contains a protocol-specific error code on failure.
+The `connect_duration_ms` field records the time from attempt start to
+outcome.
 
 ## Event: next_attempt_timer_set
 
@@ -575,6 +649,9 @@ The `reason` field indicates why the timer was canceled:
 
 ## Event: connection_selected
 
+Logged when a successful connection attempt is chosen as the winning
+connection for this HE session.
+
 ~~~ cddl
 HEConnectionSelected = {
 	he_session_id: text
@@ -585,7 +662,13 @@ HEConnectionSelected = {
 }
 ~~~
 
+The `attempt_id` identifies which attempt won. The `ref_event_id` field
+may reference the corresponding transport-level event (e.g., a QUIC
+`connectivity:connection_started` or TLS `handshake_complete`).
+
 ## Event: connection_aborted
+
+Logged when the entire HE session fails without establishing any connection.
 
 ~~~ cddl
 HEConnectionAborted = {
@@ -596,7 +679,13 @@ HEConnectionAborted = {
 }
 ~~~
 
+The `reason` field contains a human-readable or implementation-defined
+description of why the session was aborted (e.g., "all attempts failed",
+"no addresses resolved", "user canceled").
+
 ## Event: metrics
+
+Logged at the end of an HE session to provide summary statistics.
 
 ~~~ cddl
 HEMetrics = {
@@ -610,6 +699,16 @@ HEMetrics = {
 	* $$he-metrics-extension
 }
 ~~~
+
+The fields capture end-to-end session statistics:
+
+* `tt_first_success_ms`: Time from session start to the first successful
+  connection attempt (i.e., time-to-first-byte readiness).
+* `first_success_family`: The address family of the first successful attempt.
+* `attempts_total`: Total number of connection attempts initiated.
+* `attempts_success`: Number of attempts that completed successfully.
+* `attempts_failure`: Number of attempts that failed, timed out, or were
+  canceled.
 
 ## Conformance Requirements
 
