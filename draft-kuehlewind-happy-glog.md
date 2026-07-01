@@ -37,6 +37,8 @@ author:
     email: mirja.kuehlewind@ercisson.com
 
 normative:
+  QLOG-MAIN:
+    I-D.ietf-quic-qlog-main-schema
 
 informative:
 
@@ -142,7 +144,7 @@ HEDNSResult = {
 
 Each event uses: 
 	name: "hev3:<event>"
-with the `event` type identifier defined below in the section heading.
+with the <event> type identifier defined below in the section headings.
 
 ## Event: config_set
 
@@ -178,7 +180,7 @@ HEDNSQueryStarted = {
 	he_session_id: string
 	dns_id: string
 	hostname: string
-	qtypes: ["A" | "AAAA"]+
+	qtypes: [+ "A" | "AAAA"]
 	bootstrap_hint: string ?
 
 	* $$he-dnsquerystarted-extension
@@ -357,7 +359,7 @@ TBD
 
 # IANA Considerations
 
-This document registers a new entry in the "qlog event schema URIs" registry (created in Section 15 of [QLOG-MAIN]):
+This document registers a new entry in the "qlog event schema URIs" registry (created in {Section 15 of QLOG-MAIN}):
 
 Event schema URI: 
 : urn:ietf:params:qlog:events:hev3
