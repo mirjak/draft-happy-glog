@@ -39,6 +39,8 @@ author:
 normative:
   QLOG-MAIN:
     I-D.ietf-quic-qlog-main-schema
+  HEV3:
+    I-D.ietf-happy-happyeyeballs-v3
 
 informative:
 
