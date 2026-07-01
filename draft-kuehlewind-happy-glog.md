@@ -220,9 +220,9 @@ HEConfigSet = {
 	he_session_id: text
 	policy: HEPolicy,
 	reason:
-		"startup" |
-		"network_change" |
-		"app_config" |
+		"startup" /
+		"network_change" /
+		"app_config" /
 		"persisted_state"
 
 	* $$he-configset-extension
@@ -236,9 +236,9 @@ HEConfigUpdated = {
 	he_session_id: text
 	changed: HEPolicy
 	reason:
-		"network_change" |
-		"admin" |
-		"app_hint" |
+		"network_change" /
+		"admin" /
+		"app_hint" /
 		"learned_preference"
 
 	* $$he-configupdated-extension
@@ -443,11 +443,11 @@ HEAttemptScheduled = {
 	scheduled_after_ms: uint32
 	priority: uint32
 	reason:
-		"policy_timer" |
-		"dns_completed" |
-		"resolution_delay_expired" |
-		"racing_window" |
-		"retry" |
+		"policy_timer" /
+		"dns_completed" /
+		"resolution_delay_expired" /
+		"racing_window" /
+		"retry" /
 		"last_resort_synthesis"
 
 	* $$he-attemptscheduled-extension
@@ -461,7 +461,7 @@ HEAttemptStarted = {
 	he_session_id: text
 	attempt_id: text
 	target: HEAttemptTarget
-	transport: "tcp" | "quic"
+	transport: "tcp" / "quic"
 	ref_event_id: text ?
 
 	* $$he-attemptstarted-extension
@@ -511,7 +511,7 @@ HEAttemptResumed = {
 HEAttemptOutcome = {
 	he_session_id: text
 	attempt_id: text
-	result: "success" | "failure" | "timeout" | "canceled"
+	result: "success" / "failure" / "timeout" / "canceled"
 	error_code: text ?
 	connect_duration_ms: uint32 ?
 
@@ -602,7 +602,7 @@ HEConnectionAborted = {
 HEMetrics = {
 	he_session_id: text
 	tt_first_success_ms: uint32 ?
-	first_success_family: "ipv4" | "ipv6" ?
+	first_success_family: "ipv4" / "ipv6" ?
 	attempts_total: uint32
 	attempts_success: uint32
 	attempts_failure: uint32
@@ -641,7 +641,7 @@ Event schema URI:
 : urn:ietf:params:qlog:events:hev3
 
 Namespace:
-: nev3
+: hev3
 
 Event Types:
 :  config_set, config_updated, dns_query_started, dns_query_finished, nat64_prefix_discovered, candidate_discovered, candidates_sorted, candidate_removed, candidates_resorted, attempt_scheduled, attempt_started, attempt_pended, attempt_resumed, attempt_outcome, next_attempt_timer_set, next_attempt_timer_fired, next_attempt_timer_canceled, connection_selected, connection_aborted, metrics
