@@ -311,6 +311,67 @@ belongs to (per Section 5.1 and 5.2 of HEv3). The `supersedes` field
 contains the address of an SVCB hint that this candidate replaces once
 authoritative A/AAAA records arrive (per Section 7 of HEv3).
 
+## Event: candidate_removed
+
+Logged when a candidate address is removed from the list during connection
+setup (per Section 7 of HEv3).
+
+~~~ cddl
+HECandidateRemoved = {
+	he_session_id: string
+	target: HEAttemptTarget
+	reason: "ttl_expired" / "svcb_hint_replaced" / "dns_negative" / "alpn_mismatch"
+	had_active_attempt: bool ?
+
+	* $$he-candidateremoved-extension
+}
+~~~
+
+The `reason` field indicates why the candidate was removed:
+
+* `"ttl_expired"`: The DNS TTL for this address expired before an attempt
+  was started.
+* `"svcb_hint_replaced"`: Authoritative A/AAAA records arrived and this
+  hint address was absent from them (Section 7.3 of SVCB).
+* `"dns_negative"`: A previously positive record was replaced by a negative
+  response (e.g., via DNS push notification).
+* `"alpn_mismatch"`: The SVCB ALPN set does not contain protocols the
+  client supports (Section 6.2 of HEv3).
+
+The `had_active_attempt` field indicates whether an in-progress attempt
+exists for this target; per HEv3 Section 7, such attempts SHOULD NOT be
+canceled.
+
+## Event: candidates_resorted
+
+Logged when the candidate list is re-sorted due to new addresses arriving
+mid-race (per Section 7 of HEv3). Re-sorting ensures that address family
+interleaving and priority rules are maintained correctly regardless of when
+addresses arrive.
+
+~~~ cddl
+HECandidatesResorted = {
+	he_session_id: string
+	trigger: "new_addresses" / "new_svcb" / "dns_push"
+	new_order: [+ HEAttemptTarget]
+
+	* $$he-candidatesresorted-extension
+}
+~~~
+
+The `trigger` field captures why re-sorting occurred:
+
+* `"new_addresses"`: New A/AAAA records arrived (e.g., delayed IPv4 after
+  an IPv6-only start).
+* `"new_svcb"`: New SVCB/HTTPS ServiceMode records changed grouping or
+  priorities.
+* `"dns_push"`: A DNS push notification added addresses.
+
+The `new_order` array contains the full re-sorted candidate list as
+`HEAttemptTarget` elements. Position in the array implies the new rank.
+Only pending candidates (those not yet attempted or currently in progress)
+are included.
+
 ## Event: attempt_scheduled
 
 ~~~ cddl
@@ -525,7 +586,7 @@ Namespace:
 : nev3
 
 Event Types:
-:  config_set, config_updated, dns_query_started, dns_query_finished, candidate_discovered, attempt_scheduled, attempt_started, attempt_pended, attempt_resumed, attempt_outcome, racing_window_opened, racing_window_closed, fallback_timer_set, fallback_timer_fired, fallback_timer_canceled, connection_selected, connection_aborted, metrics
+:  config_set, config_updated, dns_query_started, dns_query_finished, candidate_discovered, candidate_removed, candidates_resorted, attempt_scheduled, attempt_started, attempt_pended, attempt_resumed, attempt_outcome, racing_window_opened, racing_window_closed, fallback_timer_set, fallback_timer_fired, fallback_timer_canceled, connection_selected, connection_aborted, metrics
 
 Description:
 : Event definitions for logging HEv3 events
