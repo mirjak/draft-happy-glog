@@ -286,6 +286,28 @@ determining whether SVCB-dependent handshakes must be pended (Section 6.3).
 The `is_alias_follow` field is set to true when this query was triggered
 by an AliasMode SVCB/HTTPS record requiring a follow-up resolution.
 
+## Event: nat64_prefix_discovered
+
+Logged when the client discovers a NAT64 prefix for use on an IPv6-only
+network (Section 8 of HEv3).
+
+~~~ cddl
+HENat64PrefixDiscovered = {
+	he_session_id: text
+	prefix: text
+	prefix_length: uint32
+	source: "pref64_ra" / "rfc7050_discovery" / "dns64_inferred"
+
+	* $$he-nat64prefixdiscovered-extension
+}
+~~~
+
+The `source` field indicates how the prefix was obtained:
+
+* `"pref64_ra"`: Learned from a Router Advertisement (RFC 8781).
+* `"rfc7050_discovery"`: Discovered via the well-known name lookup (RFC 7050).
+* `"dns64_inferred"`: Inferred from DNS64 behavior on the network.
+
 ## Event: candidate_discovered
 
 ~~~ cddl
@@ -425,7 +447,8 @@ HEAttemptScheduled = {
 		"dns_completed" |
 		"resolution_delay_expired" |
 		"racing_window" |
-		"retry"
+		"retry" |
+		"last_resort_synthesis"
 
 	* $$he-attemptscheduled-extension
 }
@@ -621,7 +644,7 @@ Namespace:
 : nev3
 
 Event Types:
-:  config_set, config_updated, dns_query_started, dns_query_finished, candidate_discovered, candidates_sorted, candidate_removed, candidates_resorted, attempt_scheduled, attempt_started, attempt_pended, attempt_resumed, attempt_outcome, next_attempt_timer_set, next_attempt_timer_fired, next_attempt_timer_canceled, connection_selected, connection_aborted, metrics
+:  config_set, config_updated, dns_query_started, dns_query_finished, nat64_prefix_discovered, candidate_discovered, candidates_sorted, candidate_removed, candidates_resorted, attempt_scheduled, attempt_started, attempt_pended, attempt_resumed, attempt_outcome, next_attempt_timer_set, next_attempt_timer_fired, next_attempt_timer_canceled, connection_selected, connection_aborted, metrics
 
 Description:
 : Event definitions for logging HEv3 events
