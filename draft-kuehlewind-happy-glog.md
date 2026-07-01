@@ -217,7 +217,7 @@ with the `<event>` type identifier defined below in the section headings.
 
 ~~~ cddl
 HEConfigSet = {
-	he_session_id: string
+	he_session_id: text
 	policy: HEPolicy,
 	reason:
 		"startup" |
@@ -233,7 +233,7 @@ HEConfigSet = {
 
 ~~~ cddl
 HEConfigUpdated = {
-	he_session_id: string
+	he_session_id: text
 	changed: HEPolicy
 	reason:
 		"network_change" |
@@ -249,11 +249,11 @@ HEConfigUpdated = {
 
 ~~~ cddl
 HEDNSQueryStarted = {
-	he_session_id: string
-	dns_id: string
-	hostname: string
+	he_session_id: text
+	dns_id: text
+	hostname: text
 	qtypes: [+ "A" / "AAAA" / "SVCB" / "HTTPS"]
-	bootstrap_hint: string ?
+	bootstrap_hint: text ?
 
 	* $$he-dnsquerystarted-extension
 }
@@ -263,9 +263,9 @@ HEDNSQueryStarted = {
 
 ~~~ cddl
 HEDNSQueryFinished = {
-	he_session_id: string
-	dns_id: string
-	hostname: string
+	he_session_id: text
+	dns_id: text
+	hostname: text
 	results: [* HEDNSResult]
 	answer_type: "positive" / "negative" / "error" ?
 	error_code: text ?
@@ -290,11 +290,10 @@ by an AliasMode SVCB/HTTPS record requiring a follow-up resolution.
 
 ~~~ cddl
 HECandidateDiscovered = {
-	he_session_id: string
+	he_session_id: text
 	source: "dns" / "cache" / "alt_svc" / "synth" / "preconnect" /
 	        "svcb_hint" / "nat64_synthesis"
 	target: HEAttemptTarget
-	rank: uint32
 	group_id: text ?
 	supersedes: text ?
 
@@ -311,6 +310,46 @@ belongs to (per Section 5.1 and 5.2 of HEv3). The `supersedes` field
 contains the address of an SVCB hint that this candidate replaces once
 authoritative A/AAAA records arrive (per Section 7 of HEv3).
 
+## Event: candidates_sorted
+
+Logged once sufficient DNS answers have been received (per Section 4.2 of
+HEv3) and the implementation has applied the three-level sorting algorithm
+(Section 5). This event captures the full grouped and ordered candidate list
+before racing begins.
+
+~~~ cddl
+HECandidatesSorted = {
+	he_session_id: text
+	groups: [+ HECandidateGroup]
+
+	* $$he-candidatessorted-extension
+}
+
+HECandidateGroup = {
+	group_id: text
+	alpn: [+ text] ?
+	ech_available: bool ?
+	service_priority: uint32 ?
+	candidates: [+ HEAttemptTarget]
+}
+~~~
+
+The `groups` array is ordered by priority. Within each group:
+
+* `alpn` captures the application protocol set that defines this group
+  (Section 5.1 of HEv3).
+* `ech_available` indicates whether ECH configuration is available for
+  endpoints in this group (Section 5.1 of HEv3).
+* `service_priority` reflects the SVCB SvcPriority value for this group
+  (Section 5.2 of HEv3). Groups with equal priority SHOULD be shuffled
+  randomly.
+* `candidates` is ordered per Section 5.3 of HEv3: RFC 6724 destination
+  address selection, historical RTT preferences, and address family
+  interleaving applied.
+
+For simple cases without SVCB records, a single group with all candidates
+is sufficient.
+
 ## Event: candidate_removed
 
 Logged when a candidate address is removed from the list during connection
@@ -318,7 +357,7 @@ setup (per Section 7 of HEv3).
 
 ~~~ cddl
 HECandidateRemoved = {
-	he_session_id: string
+	he_session_id: text
 	target: HEAttemptTarget
 	reason: "ttl_expired" / "svcb_hint_replaced" / "dns_negative" / "alpn_mismatch"
 	had_active_attempt: bool ?
@@ -351,7 +390,7 @@ addresses arrive.
 
 ~~~ cddl
 HECandidatesResorted = {
-	he_session_id: string
+	he_session_id: text
 	trigger: "new_addresses" / "new_svcb" / "dns_push"
 	new_order: [+ HEAttemptTarget]
 
@@ -376,8 +415,8 @@ are included.
 
 ~~~ cddl
 HEAttemptScheduled = {
-	he_session_id: string
-	attempt_id: string
+	he_session_id: text
+	attempt_id: text
 	target: HEAttemptTarget
 	scheduled_after_ms: uint32
 	priority: uint32
@@ -395,11 +434,11 @@ HEAttemptScheduled = {
 
 ~~~ cddl
 HEAttemptStarted = {
-	he_session_id: string
-	attempt_id: string
+	he_session_id: text
+	attempt_id: text
 	target: HEAttemptTarget
 	transport: "tcp" | "quic"
-	ref_event_id: string ?
+	ref_event_id: text ?
 
 	* $$he-attemptstarted-extension
 }
@@ -416,8 +455,8 @@ is expected from SVCB records).
 
 ~~~ cddl
 HEAttemptPended = {
-	he_session_id: string
-	attempt_id: string
+	he_session_id: text
+	attempt_id: text
 	reason: "awaiting_svcb" / "awaiting_ech_config" / "dnssec_validation"
 	waiting_for: text ?
 
@@ -434,8 +473,8 @@ Logged when a previously pended attempt resumes its handshake.
 
 ~~~ cddl
 HEAttemptResumed = {
-	he_session_id: string
-	attempt_id: string
+	he_session_id: text
+	attempt_id: text
 	trigger: "svcb_received" / "timeout" / "policy_override"
 
 	* $$he-attemptresumed-extension
@@ -446,10 +485,10 @@ HEAttemptResumed = {
 
 ~~~ cddl
 HEAttemptOutcome = {
-	he_session_id: string
-	attempt_id: string
+	he_session_id: text
+	attempt_id: text
 	result: "success" | "failure" | "timeout" | "canceled"
-	error_code: string ?
+	error_code: text ?
 	connect_duration_ms: uint32 ?
 
 	* $$he-attemptoutcome-extension
@@ -460,8 +499,8 @@ HEAttemptOutcome = {
 
 ~~~ cddl
 HERacingWindowOpened = {
-	he_session_id: string
-	window_id: string
+	he_session_id: text
+	window_id: text
 	max_parallel_attempts: uint32
 
 	* $$he-racingwindowopened-extension
@@ -472,8 +511,8 @@ HERacingWindowOpened = {
 
 ~~~ cddl
 HERacingWindowClosed = {
-	he_session_id: string
-	window_id: string
+	he_session_id: text
+	window_id: text
 
 	* $$he-racingwindowclosed-extension
 }
@@ -483,8 +522,8 @@ HERacingWindowClosed = {
 
 ~~~ cddl
 HEFallbackTimerSet = {
-	he_session_id: string
-	timer_id: string
+	he_session_id: text
+	timer_id: text
 	delay_ms: uint32
 	for_family: "ipv4" | "ipv6"
 
@@ -496,8 +535,8 @@ HEFallbackTimerSet = {
 
 ~~~ cddl
 HEFallbackTimerFired = {
-	he_session_id: string
-  	timer_id: string
+	he_session_id: text
+  	timer_id: text
 
 	* $$he-fallbacktimerfired-extension
 }
@@ -507,8 +546,8 @@ HEFallbackTimerFired = {
 
 ~~~ cddl
 HEFallbackTimerCanceled = {
-	he_session_id: string,
- 	timer_id: string,
+	he_session_id: text,
+ 	timer_id: text,
 	reason: "success” | “abort"
 
 	* $$he-fallbacktimercanceled-extension
@@ -519,9 +558,9 @@ HEFallbackTimerCanceled = {
 
 ~~~ cddl
 HEConnectionSelected = {
-	he_session_id: string
-	attempt_id: string
-	ref_event_id: string ?
+	he_session_id: text
+	attempt_id: text
+	ref_event_id: text ?
 
 	* $$he-connectionselected-extension
 }
@@ -531,8 +570,8 @@ HEConnectionSelected = {
 
 ~~~ cddl
 HEConnectionAborted = {
-	he_session_id: string
-	reason: string
+	he_session_id: text
+	reason: text
 
 	* $$he-connectionaborted-extension
 }
@@ -542,7 +581,7 @@ HEConnectionAborted = {
 
 ~~~ cddl
 HEMetrics = {
-	he_session_id: string
+	he_session_id: text
 	tt_first_success_ms: uint32 ?
 	first_success_family: "ipv4" | "ipv6" ?
 	attempts_total: uint32
@@ -586,7 +625,7 @@ Namespace:
 : nev3
 
 Event Types:
-:  config_set, config_updated, dns_query_started, dns_query_finished, candidate_discovered, candidate_removed, candidates_resorted, attempt_scheduled, attempt_started, attempt_pended, attempt_resumed, attempt_outcome, racing_window_opened, racing_window_closed, fallback_timer_set, fallback_timer_fired, fallback_timer_canceled, connection_selected, connection_aborted, metrics
+:  config_set, config_updated, dns_query_started, dns_query_finished, candidate_discovered, candidates_sorted, candidate_removed, candidates_resorted, attempt_scheduled, attempt_started, attempt_pended, attempt_resumed, attempt_outcome, racing_window_opened, racing_window_closed, fallback_timer_set, fallback_timer_fired, fallback_timer_canceled, connection_selected, connection_aborted, metrics
 
 Description:
 : Event definitions for logging HEv3 events
