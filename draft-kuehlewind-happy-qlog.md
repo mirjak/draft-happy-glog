@@ -684,6 +684,7 @@ Logged at the end of an HE session to provide summary statistics.
 ~~~ cddl
 HEMetrics = {
 	he_session_id: text
+	total_duration_ms: uint32 ?
 	tt_first_success_ms: uint32 ?
 	first_success_family: "ipv4" / "ipv6" ?
 	first_success_transport: "tcp" / "quic" ?
@@ -697,6 +698,8 @@ HEMetrics = {
 
 The fields capture end-to-end session statistics:
 
+* `total_duration_ms`: Total time from session start to final outcome
+  (connection selected or session aborted).
 * `tt_first_success_ms`: Time from session start to the first successful
   connection attempt (i.e., time-to-first-byte readiness).
 * `first_success_family`: The address family of the first successful attempt.
