@@ -684,10 +684,10 @@ Logged at the end of an HE session to provide summary statistics.
 ~~~ cddl
 HEMetrics = {
 	he_session_id: text
-	total_duration_ms: uint32 ?
-	tt_first_success_ms: uint32 ?
-	first_success_family: "ipv4" / "ipv6" ?
-	first_success_transport: "tcp" / "quic" ?
+	total_duration_ms: uint32
+	tt_first_success_ms: uint32
+	first_success_family: "ipv4" / "ipv6"
+	first_success_transport: "tcp" / "quic"
 	attempts_total: uint32
 	attempts_success: uint32
 	attempts_failure: uint32
