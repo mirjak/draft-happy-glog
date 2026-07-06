@@ -684,10 +684,11 @@ Logged at the end of an HE session to provide summary statistics.
 ~~~ cddl
 HEMetrics = {
 	he_session_id: text
+	outcome: "success" / "aborted"
 	total_duration_ms: uint32
-	tt_first_success_ms: uint32
-	first_success_family: "ipv4" / "ipv6"
-	first_success_transport: "tcp" / "quic"
+	tt_first_success_ms: uint32 ?
+	first_success_family: "ipv4" / "ipv6" ?
+	first_success_transport: "tcp" / "quic" ?
 	attempts_total: uint32
 	attempts_success: uint32
 	attempts_failure: uint32
@@ -698,6 +699,8 @@ HEMetrics = {
 
 The fields capture end-to-end session statistics:
 
+* `outcome`: Whether the session established a connection (`"success"`) or
+  failed entirely (`"aborted"`).
 * `total_duration_ms`: Total time from session start to final outcome
   (connection selected or session aborted).
 * `tt_first_success_ms`: Time from session start to the first successful
@@ -709,6 +712,9 @@ The fields capture end-to-end session statistics:
 * `attempts_success`: Number of attempts that completed successfully.
 * `attempts_failure`: Number of attempts that failed, timed out, or were
   canceled.
+
+When `outcome` is `"aborted"`, the fields `tt_first_success_ms`,
+`first_success_family`, and `first_success_transport` are not present.
 
 ## Conformance Requirements
 
