@@ -344,8 +344,7 @@ The `source` field indicates how the prefix was obtained:
 ~~~ cddl
 HECandidateDiscovered = {
 	he_session_id: text
-	source: "dns" / "cache" / "alt_svc" / "synth" / "preconnect" /
-	        "svcb_hint" / "nat64_synthesis"
+	source: "dns" / "svcb_hint" / "nat64_synthesis"
 	target: HEAttemptTarget
 	group_id: text ?
 	supersedes: text ?
@@ -354,9 +353,10 @@ HECandidateDiscovered = {
 }
 ~~~
 
-The `source` value `"svcb_hint"` indicates the address came from ipv4hint or
-ipv6hint parameters in a SVCB/HTTPS record. The `"nat64_synthesis"` value
-indicates a locally synthesized IPv6 address for NAT64 traversal.
+The `source` value `"dns"` indicates the address came from A or AAAA
+records. The `"svcb_hint"` value indicates the address came from ipv4hint
+or ipv6hint parameters in a SVCB/HTTPS record. The `"nat64_synthesis"`
+value indicates a locally synthesized IPv6 address for NAT64 traversal.
 
 The `group_id` field identifies which protocol/priority group this candidate
 belongs to (per Section 5.1 and 5.2 of HEv3). The `supersedes` field
