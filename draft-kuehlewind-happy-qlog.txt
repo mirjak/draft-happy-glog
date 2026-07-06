@@ -383,6 +383,9 @@ Table of Contents
 
 5.3.  Event: dns_query_finished
 
+   Logged when a DNS query completes with results, an error, or a
+   negative response.
+
    HEDNSQueryFinished = {
            he_session_id: text
            dns_id: text

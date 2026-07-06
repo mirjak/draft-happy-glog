@@ -1627,7 +1627,9 @@ an address hint used to reach the DNS resolver itself.<a href="#section-5.2-3" c
         <h3 id="name-event-dns_query_finished">
 <a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-event-dns_query_finished" class="section-name selfRef">Event: dns_query_finished</a>
         </h3>
-<div class="lang-cddl sourcecode" id="section-5.3-1">
+<p id="section-5.3-1">Logged when a DNS query completes with results, an error, or a negative
+response.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<div class="lang-cddl sourcecode" id="section-5.3-2">
 <pre>
 HEDNSQueryFinished = {
         he_session_id: text
@@ -1643,15 +1645,15 @@ HEDNSQueryFinished = {
 
         * $$he-dnsqueryfinished-extension
 }
-</pre><a href="#section-5.3-1" class="pilcrow">¶</a>
+</pre><a href="#section-5.3-2" class="pilcrow">¶</a>
 </div>
-<p id="section-5.3-2">The <code>answer_type</code> field distinguishes positive (non-empty) from negative
+<p id="section-5.3-3">The <code>answer_type</code> field distinguishes positive (non-empty) from negative
 (empty, no error) and error responses, which is significant for HEv3's
 async resolution logic (Section 4.2). The <code>dnssec_validated</code> field indicates
 whether the response was cryptographically validated, relevant for
 determining whether SVCB-dependent handshakes must be pended (Section 6.3).
 The <code>is_alias_follow</code> field is set to true when this query was triggered
-by an AliasMode SVCB/HTTPS record requiring a follow-up resolution.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
+by an AliasMode SVCB/HTTPS record requiring a follow-up resolution.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="event-nat64prefixdiscovered">
