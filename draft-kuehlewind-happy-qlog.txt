@@ -82,26 +82,25 @@ Table of Contents
      4.3.  DNS Result
    5.  Event Definitions
      5.1.  Event: config_set
-     5.2.  Event: config_updated
-     5.3.  Event: dns_query_started
-     5.4.  Event: dns_query_finished
-     5.5.  Event: nat64_prefix_discovered
-     5.6.  Event: candidate_discovered
-     5.7.  Event: candidates_sorted
-     5.8.  Event: candidate_removed
-     5.9.  Event: candidates_resorted
-     5.10. Event: attempt_scheduled
-     5.11. Event: attempt_started
-     5.12. Event: attempt_pended
-     5.13. Event: attempt_resumed
-     5.14. Event: attempt_outcome
-     5.15. Event: next_attempt_timer_set
-     5.16. Event: next_attempt_timer_fired
-     5.17. Event: next_attempt_timer_canceled
-     5.18. Event: connection_selected
-     5.19. Event: connection_aborted
-     5.20. Event: metrics
-     5.21. Conformance Requirements
+     5.2.  Event: dns_query_started
+     5.3.  Event: dns_query_finished
+     5.4.  Event: nat64_prefix_discovered
+     5.5.  Event: candidate_discovered
+     5.6.  Event: candidates_sorted
+     5.7.  Event: candidate_removed
+     5.8.  Event: candidates_resorted
+     5.9.  Event: attempt_scheduled
+     5.10. Event: attempt_started
+     5.11. Event: attempt_pended
+     5.12. Event: attempt_resumed
+     5.13. Event: attempt_outcome
+     5.14. Event: next_attempt_timer_set
+     5.15. Event: next_attempt_timer_fired
+     5.16. Event: next_attempt_timer_canceled
+     5.17. Event: connection_selected
+     5.18. Event: connection_aborted
+     5.19. Event: metrics
+     5.20. Conformance Requirements
    6.  Correlation with transport protocols
    7.  Security Considerations
    8.  IANA Considerations
@@ -335,60 +334,34 @@ Table of Contents
 
 5.1.  Event: config_set
 
-   Logged when the HE policy is initially configured for a session.
+   Logged when the HE policy is configured or updated during a session.
 
    HEConfigSet = {
            he_session_id: text
-           policy: HEPolicy,
+           policy: HEPolicy
            reason:
                    "startup" /
-                   "network_change" /
                    "app_config" /
-                   "persisted_state"
+                   "network_change"
 
            * $$he-configset-extension
    }
 
-   The policy field contains the full initial policy configuration.  The
-   reason field indicates what triggered the configuration:
+   The policy field contains the policy configuration.  The reason field
+   indicates what triggered the configuration:
 
    *  "startup": Default policy applied at application start.
 
-   *  "network_change": Policy set in response to a network transition.
-
    *  "app_config": Policy provided by the application.
 
-   *  "persisted_state": Policy restored from previously saved state.
+   *  "network_change": Policy updated in response to a network
+      transition.
 
-5.2.  Event: config_updated
+   The first occurrence of this event in a session represents the
+   initial configuration; typical reasons are "startup" or "app_config".
+   Subsequent occurrences represent policy updates.
 
-   Logged when the HE policy changes during a session.
-
-   HEConfigUpdated = {
-           he_session_id: text
-           changed: HEPolicy
-           reason:
-                   "network_change" /
-                   "admin" /
-                   "app_hint" /
-                   "learned_preference"
-
-           * $$he-configupdated-extension
-   }
-
-   The changed field contains the updated policy configuration.  The
-   reason field indicates what triggered the update:
-
-   *  "network_change": Policy updated due to a network transition.
-
-   *  "admin": Policy changed by an administrator or system setting.
-
-   *  "app_hint": Application provided updated preferences.
-
-   *  "learned_preference": Policy adjusted based on observed behavior
-      (e.g., learned RTT data).
-
-5.3.  Event: dns_query_started
+5.2.  Event: dns_query_started
 
    Logged when a DNS query is initiated as part of hostname resolution.
 
@@ -408,7 +381,7 @@ Table of Contents
    DNS record types being queried.  The bootstrap_hint field optionally
    contains an address hint used to reach the DNS resolver itself.
 
-5.4.  Event: dns_query_finished
+5.3.  Event: dns_query_finished
 
    HEDNSQueryFinished = {
            he_session_id: text
@@ -434,7 +407,7 @@ Table of Contents
    is_alias_follow field is set to true when this query was triggered by
    an AliasMode SVCB/HTTPS record requiring a follow-up resolution.
 
-5.5.  Event: nat64_prefix_discovered
+5.4.  Event: nat64_prefix_discovered
 
    Logged when the client discovers a NAT64 prefix for use on an
    IPv6-only network (Section 8 of HEv3).
@@ -457,7 +430,7 @@ Table of Contents
 
    *  "dns64_inferred": Inferred from DNS64 behavior on the network.
 
-5.6.  Event: candidate_discovered
+5.5.  Event: candidate_discovered
 
    HECandidateDiscovered = {
            he_session_id: text
@@ -481,7 +454,7 @@ Table of Contents
    candidate replaces once authoritative A/AAAA records arrive (per
    Section 7 of HEv3).
 
-5.7.  Event: candidates_sorted
+5.6.  Event: candidates_sorted
 
    Logged once sufficient DNS answers have been received (per
    Section 4.2 of HEv3) and the implementation has applied the three-
@@ -522,7 +495,7 @@ Table of Contents
    For simple cases without SVCB records, a single group with all
    candidates is sufficient.
 
-5.8.  Event: candidate_removed
+5.7.  Event: candidate_removed
 
    Logged when a candidate address is removed from the list during
    connection setup (per Section 7 of HEv3).
@@ -554,7 +527,7 @@ Table of Contents
    exists for this target; per HEv3 Section 7, such attempts are not
    canceled.
 
-5.9.  Event: candidates_resorted
+5.8.  Event: candidates_resorted
 
    Logged when the candidate list is re-sorted due to new addresses
    arriving mid-race (per Section 7 of HEv3).  Re-sorting ensures that
@@ -584,7 +557,7 @@ Table of Contents
    rank.  Only pending candidates (those not yet attempted or currently
    in progress) are included.
 
-5.10.  Event: attempt_scheduled
+5.9.  Event: attempt_scheduled
 
    Logged when a connection attempt is scheduled to start after a delay.
 
@@ -624,7 +597,7 @@ Table of Contents
       expired, triggering a fallback A query and NAT64 synthesis
       (Section 8.4 of HEv3).
 
-5.11.  Event: attempt_started
+5.10.  Event: attempt_started
 
    Logged when a connection attempt begins (i.e., the first packet is
    sent).
@@ -644,7 +617,7 @@ Table of Contents
    another qlog event schema; QUIC implementations should set it to the
    relevant connectivity:connection_started event.
 
-5.12.  Event: attempt_pended
+5.11.  Event: attempt_pended
 
    Logged when a connection attempt's TLS handshake must be paused until
    SVCB/HTTPS responses are received, as required by Section 6.3 of HEv3
@@ -663,7 +636,7 @@ Table of Contents
    The waiting_for field may reference the dns_id of the outstanding
    SVCB/HTTPS query.
 
-5.13.  Event: attempt_resumed
+5.12.  Event: attempt_resumed
 
    Logged when a previously pended attempt resumes its handshake.
 
@@ -685,7 +658,7 @@ Table of Contents
    *  "policy_override": The implementation decided to proceed despite
       not receiving the expected response (e.g., opportunistic ECH).
 
-5.14.  Event: attempt_outcome
+5.13.  Event: attempt_outcome
 
    Logged when a connection attempt reaches a terminal state.
 
@@ -716,7 +689,7 @@ Table of Contents
    failure.  The connect_duration_ms field records the time from attempt
    start to outcome.
 
-5.15.  Event: next_attempt_timer_set
+5.14.  Event: next_attempt_timer_set
 
    Logged when the Next Connection Attempt Timer is set or adjusted.
    This timer controls when the next connection attempt begins
@@ -741,7 +714,7 @@ Table of Contents
       completion (e.g., TCP connected, waiting for TLS — per Section 6.1
       of HEv3).
 
-5.16.  Event: next_attempt_timer_fired
+5.15.  Event: next_attempt_timer_fired
 
    Logged when the timer fires and the next connection attempt is
    triggered.
@@ -752,7 +725,7 @@ Table of Contents
            * $$he-nextattemptimerfired-extension
    }
 
-5.17.  Event: next_attempt_timer_canceled
+5.16.  Event: next_attempt_timer_canceled
 
    Logged when the timer is canceled before firing.
 
@@ -771,7 +744,7 @@ Table of Contents
 
    *  "list_exhausted": All candidates have been attempted.
 
-5.18.  Event: connection_selected
+5.17.  Event: connection_selected
 
    Logged when a successful connection attempt is chosen as the winning
    connection for this HE session.
@@ -788,7 +761,7 @@ Table of Contents
    may reference the corresponding transport-level event (e.g., a QUIC
    connectivity:connection_started or TLS handshake_complete).
 
-5.19.  Event: connection_aborted
+5.18.  Event: connection_aborted
 
    Logged when the entire HE session fails without establishing any
    connection.
@@ -804,7 +777,7 @@ Table of Contents
    description of why the session was aborted (e.g., "all attempts
    failed", "no addresses resolved", "user canceled").
 
-5.20.  Event: metrics
+5.19.  Event: metrics
 
    Logged at the end of an HE session to provide summary statistics.
 
@@ -835,7 +808,7 @@ Table of Contents
    *  attempts_failure: Number of attempts that failed, timed out, or
       were canceled.
 
-5.21.  Conformance Requirements
+5.20.  Conformance Requirements
 
    *  Every attempt_started MUST have exactly one attempt_outcome.
 
@@ -869,13 +842,13 @@ Table of Contents
 
    Namespace:  hev3
 
-   Event Types:  config_set, config_updated, dns_query_started,
-      dns_query_finished, nat64_prefix_discovered, candidate_discovered,
-      candidates_sorted, candidate_removed, candidates_resorted,
-      attempt_scheduled, attempt_started, attempt_pended,
-      attempt_resumed, attempt_outcome, next_attempt_timer_set,
-      next_attempt_timer_fired, next_attempt_timer_canceled,
-      connection_selected, connection_aborted, metrics
+   Event Types:  config_set, dns_query_started, dns_query_finished,
+      nat64_prefix_discovered, candidate_discovered, candidates_sorted,
+      candidate_removed, candidates_resorted, attempt_scheduled,
+      attempt_started, attempt_pended, attempt_resumed, attempt_outcome,
+      next_attempt_timer_set, next_attempt_timer_fired,
+      next_attempt_timer_canceled, connection_selected,
+      connection_aborted, metrics
 
    Description:  Event definitions for logging HEv3 events
 
