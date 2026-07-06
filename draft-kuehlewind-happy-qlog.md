@@ -239,56 +239,31 @@ to a single connection establishment attempt.
 
 ## Event: config_set
 
-Logged when the HE policy is initially configured for a session.
+Logged when the HE policy is configured or updated during a session.
 
 ~~~ cddl
 HEConfigSet = {
 	he_session_id: text
-	policy: HEPolicy,
+	policy: HEPolicy
 	reason:
 		"startup" /
-		"network_change" /
 		"app_config" /
-		"persisted_state"
+		"network_change"
 
 	* $$he-configset-extension
 }
 ~~~
 
-The `policy` field contains the full initial policy configuration. The
-`reason` field indicates what triggered the configuration:
+The `policy` field contains the policy configuration. The `reason` field
+indicates what triggered the configuration:
 
 * `"startup"`: Default policy applied at application start.
-* `"network_change"`: Policy set in response to a network transition.
 * `"app_config"`: Policy provided by the application.
-* `"persisted_state"`: Policy restored from previously saved state.
+* `"network_change"`: Policy updated in response to a network transition.
 
-## Event: config_updated
-
-Logged when the HE policy changes during a session.
-
-~~~ cddl
-HEConfigUpdated = {
-	he_session_id: text
-	changed: HEPolicy
-	reason:
-		"network_change" /
-		"admin" /
-		"app_hint" /
-		"learned_preference"
-
-	* $$he-configupdated-extension
-}
-~~~
-
-The `changed` field contains the updated policy configuration.
-The `reason` field indicates what triggered the update:
-
-* `"network_change"`: Policy updated due to a network transition.
-* `"admin"`: Policy changed by an administrator or system setting.
-* `"app_hint"`: Application provided updated preferences.
-* `"learned_preference"`: Policy adjusted based on observed behavior
-  (e.g., learned RTT data).
+The first occurrence of this event in a session represents the initial
+configuration; typical reasons are `"startup"` or `"app_config"`.
+Subsequent occurrences represent policy updates.
 
 ## Event: dns_query_started
 
@@ -763,7 +738,7 @@ Namespace:
 : hev3
 
 Event Types:
-:  config_set, config_updated, dns_query_started, dns_query_finished, nat64_prefix_discovered, candidate_discovered, candidates_sorted, candidate_removed, candidates_resorted, attempt_scheduled, attempt_started, attempt_pended, attempt_resumed, attempt_outcome, next_attempt_timer_set, next_attempt_timer_fired, next_attempt_timer_canceled, connection_selected, connection_aborted, metrics
+:  config_set, dns_query_started, dns_query_finished, nat64_prefix_discovered, candidate_discovered, candidates_sorted, candidate_removed, candidates_resorted, attempt_scheduled, attempt_started, attempt_pended, attempt_resumed, attempt_outcome, next_attempt_timer_set, next_attempt_timer_fired, next_attempt_timer_canceled, connection_selected, connection_aborted, metrics
 
 Description:
 : Event definitions for logging HEv3 events
