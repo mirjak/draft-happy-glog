@@ -686,6 +686,7 @@ HEMetrics = {
 	he_session_id: text
 	tt_first_success_ms: uint32 ?
 	first_success_family: "ipv4" / "ipv6" ?
+	first_success_transport: "tcp" / "quic" ?
 	attempts_total: uint32
 	attempts_success: uint32
 	attempts_failure: uint32
@@ -699,6 +700,8 @@ The fields capture end-to-end session statistics:
 * `tt_first_success_ms`: Time from session start to the first successful
   connection attempt (i.e., time-to-first-byte readiness).
 * `first_success_family`: The address family of the first successful attempt.
+* `first_success_transport`: The transport protocol of the first successful
+  attempt.
 * `attempts_total`: Total number of connection attempts initiated.
 * `attempts_success`: Number of attempts that completed successfully.
 * `attempts_failure`: Number of attempts that failed, timed out, or were
