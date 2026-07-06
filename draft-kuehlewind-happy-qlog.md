@@ -478,8 +478,6 @@ HEAttemptScheduled = {
 		"policy_timer" /
 		"dns_completed" /
 		"resolution_delay_expired" /
-		"racing_window" /
-		"retry" /
 		"last_resort_synthesis"
 
 	* $$he-attemptscheduled-extension
@@ -494,8 +492,6 @@ start. The `reason` field indicates what triggered scheduling:
 * `"dns_completed"`: DNS resolution completed, enabling the first attempt.
 * `"resolution_delay_expired"`: The Resolution Delay timer expired
   (Section 4.2 of HEv3).
-* `"racing_window"`: Scheduled as part of parallel racing.
-* `"retry"`: A retry of a previously failed attempt.
 * `"last_resort_synthesis"`: The Last Resort Local Synthesis Delay expired,
   triggering a fallback A query and NAT64 synthesis (Section 8.4 of HEv3).
 
