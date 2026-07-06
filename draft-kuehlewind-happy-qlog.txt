@@ -898,4 +898,4 @@ Author's Address
 
    Mirja Kühlewind
    Ericsson
-   Email: mirja.kuehlewind@ercisson.com
+   Email: mirja.kuehlewind@ericsson.com
