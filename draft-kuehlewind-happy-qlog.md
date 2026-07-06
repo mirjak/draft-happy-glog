@@ -444,14 +444,14 @@ addresses arrive.
 ~~~ cddl
 HECandidatesResorted = {
 	he_session_id: text
-	trigger: "new_addresses" / "new_svcb" / "dns_push"
+	reason: "new_addresses" / "new_svcb" / "dns_push"
 	new_order: [+ HEAttemptTarget]
 
 	* $$he-candidatesresorted-extension
 }
 ~~~
 
-The `trigger` field captures why re-sorting occurred:
+The `reason` field captures why re-sorting occurred:
 
 * `"new_addresses"`: New A/AAAA records arrived (e.g., delayed IPv4 after
   an IPv6-only start).
@@ -545,13 +545,13 @@ Logged when a previously pended attempt resumes its handshake.
 HEAttemptResumed = {
 	he_session_id: text
 	attempt_id: text
-	trigger: "svcb_received" / "timeout" / "policy_override"
+	reason: "svcb_received" / "timeout" / "policy_override"
 
 	* $$he-attemptresumed-extension
 }
 ~~~
 
-The `trigger` field indicates what unblocked the attempt:
+The `reason` field indicates what unblocked the attempt:
 
 * `"svcb_received"`: The awaited SVCB/HTTPS response arrived.
 * `"timeout"`: A timeout expired while waiting; proceeding without the
