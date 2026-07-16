@@ -99,6 +99,7 @@ HEAttemptTarget = {
 	port: uint16
 	family: "ipv4" / "ipv6"
 	interface: text ?
+    transport: "tcp" / "quic"
 	path_id: text ?
 	alpn: [+ text] ?
 	service_name: text ?
@@ -115,6 +116,7 @@ The following fields are defined:
 * `port`: The destination port number.
 * `family`: The address family, either `"ipv4"` or `"ipv6"`.
 * `interface`: The local network interface used for this attempt.
+* `transport`: The transport protocol used for this attempt.
 * `path_id`: An implementation-defined identifier for the network path.
 * `alpn`: The negotiated ALPN set for this target derived from SVCB records.
 * `service_name`: The SVCB ServiceMode TargetName this target originates from.
@@ -504,15 +506,14 @@ HEAttemptStarted = {
 	he_session_id: text
 	attempt_id: text
 	target: HEAttemptTarget
-	transport: "tcp" / "quic"
+
 	ref_event_id: text ?
 
 	* $$he-attemptstarted-extension
 }
 ~~~
 
-The `transport` field indicates the transport protocol used for this
-attempt. The `ref_event_id` field may reference a related event in another
+The `ref_event_id` field may reference a related event in another
 qlog event schema; QUIC implementations should set it to the relevant
 `connectivity:connection_started` event.
 
