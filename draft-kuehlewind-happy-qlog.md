@@ -367,12 +367,14 @@ authoritative A/AAAA records arrive (per Section 7 of HEv3).
 
 Logged once sufficient DNS answers have been received (per Section 4.2 of
 HEv3) and the implementation has applied the three-level sorting algorithm
-(Section 5). This event captures the full grouped and ordered candidate list
-before racing begins.
+(Section 5) or when re-sorted due to new addresses arriving mid-race
+(per Section 7 of HEv3). This event captures the full grouped and ordered
+candidate list before racing begins.
 
 ~~~ cddl
 HECandidatesSorted = {
 	he_session_id: text
+    reason: "initial" / "new_addresses" / "new_svcb" / "dns_push"
 	groups: [+ HECandidateGroup]
 
 	* $$he-candidatessorted-extension
@@ -399,6 +401,15 @@ The `groups` array is ordered by priority. Within each group:
 * `candidates` is ordered per Section 5.3 of HEv3: RFC 6724 destination
   address selection, historical RTT preferences, and address family
   interleaving applied.
+
+The `reason` field captures why (re-)sorting occurred:
+
+* `"initial"`: first sort after resolution conditions met.
+* `"new_addresses"`: New A/AAAA records arrived (e.g., delayed IPv4 after
+  an IPv6-only start).
+* `"new_svcb"`: New SVCB/HTTPS ServiceMode records changed grouping or
+  priorities.
+* `"dns_push"`: A DNS push notification added addresses.
 
 For simple cases without SVCB records, a single group with all candidates
 is sufficient.
@@ -433,36 +444,6 @@ The `reason` field indicates why the candidate was removed:
 The `had_active_attempt` field indicates whether an in-progress attempt
 exists for this target; per HEv3 Section 7, such attempts are not
 canceled.
-
-## Event: candidates_resorted
-
-Logged when the candidate list is re-sorted due to new addresses arriving
-mid-race (per Section 7 of HEv3). Re-sorting ensures that address family
-interleaving and priority rules are maintained correctly regardless of when
-addresses arrive.
-
-~~~ cddl
-HECandidatesResorted = {
-	he_session_id: text
-	reason: "new_addresses" / "new_svcb" / "dns_push"
-	new_order: [+ HEAttemptTarget]
-
-	* $$he-candidatesresorted-extension
-}
-~~~
-
-The `reason` field captures why re-sorting occurred:
-
-* `"new_addresses"`: New A/AAAA records arrived (e.g., delayed IPv4 after
-  an IPv6-only start).
-* `"new_svcb"`: New SVCB/HTTPS ServiceMode records changed grouping or
-  priorities.
-* `"dns_push"`: A DNS push notification added addresses.
-
-The `new_order` array contains the full re-sorted candidate list as
-`HEAttemptTarget` elements. Position in the array implies the new rank.
-Only pending candidates (those not yet attempted or currently in progress)
-are included.
 
 ## Event: attempt_scheduled
 
